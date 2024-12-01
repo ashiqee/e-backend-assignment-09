@@ -1,0 +1,143 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                 String       @id @default(uuid())
+  email              String       @unique
+  fullName           String
+  profilePhoto       String?
+  password           String
+  role               UserRole     @default(CUSTOMER)
+  needPasswordChange Boolean      @default(true)
+  status             UserStatus   @default(ACTIVE)
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+  orders             Order[]
+  reviews            Review[]
+  cartItems          CartItem[]
+  followedShops      VendorShop[] @relation("UserFollowedShops")
+  vendorShops        VendorShop[]
+}
+
+model VendorShop {
+  id          Int       @id @default(autoincrement())
+  name        String
+  logoUrl     String?
+  description String?
+  ownerId     String
+  owner       User      @relation(fields: [ownerId], references: [id])
+  products    Product[]
+  followers   User[]    @relation("UserFollowedShops")
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Product {
+  id             Int         @id @default(autoincrement())
+  name           String
+  price          Float
+  description    String
+  imageUrl       String
+  inventoryCount Int
+  discount       Float?
+  categoryId     Int
+  category       Category    @relation(fields: [categoryId], references: [id])
+  vendorShopId   Int
+  vendorShop     VendorShop  @relation(fields: [vendorShopId], references: [id])
+  reviews        Review[]
+  cartItems      CartItem[]
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+  OrderItem      OrderItem[]
+}
+
+model Category {
+  id        Int       @id @default(autoincrement())
+  name      String
+  products  Product[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Order {
+  id          Int         @id @default(autoincrement())
+  userId      String
+  user        User        @relation(fields: [userId], references: [id])
+  totalPrice  Float
+  orderStatus OrderStatus
+  orderItems  OrderItem[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+model OrderItem {
+  id        Int     @id @default(autoincrement())
+  orderId   Int
+  order     Order   @relation(fields: [orderId], references: [id])
+  productId Int
+  product   Product @relation(fields: [productId], references: [id])
+  quantity  Int
+  price     Float
+}
+
+model Review {
+  id        Int      @id @default(autoincrement())
+  rating    Int
+  comment   String
+  productId Int
+  product   Product  @relation(fields: [productId], references: [id])
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model CartItem {
+  id        Int     @id @default(autoincrement())
+  userId    String
+  user      User    @relation(fields: [userId], references: [id])
+  productId Int
+  product   Product @relation(fields: [productId], references: [id])
+  quantity  Int
+}
+
+model Coupon {
+  id                 Int      @id @default(autoincrement())
+  code               String   @unique
+  discountPercentage Float
+  expirationDate     DateTime
+  isActive           Boolean  @default(true)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+}
+
+enum UserRole {
+  ADMIN
+  VENDOR
+  CUSTOMER
+}
+
+enum OrderStatus {
+  PENDING
+  SHIPPED
+  DELIVERED
+  CANCELED
+}
+
+enum UserStatus {
+  ACTIVE
+  BLOCKED
+  DELETED
+}
