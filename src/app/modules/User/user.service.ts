@@ -72,6 +72,16 @@ const getAUsers =  async(req:Request)=>{
     const user =  await prisma.user.findUniqueOrThrow({
         where: {
             id: req.params.userId
+        },
+        select:{
+            id:true,
+            email:true,
+            fullName:true,
+            profilePhoto:true,
+            contactNumber:true,
+            address:true,
+            role:true,
+            status:true
         }
     })
 
@@ -79,43 +89,76 @@ const getAUsers =  async(req:Request)=>{
     
 }
 
+// update user role 
+
 // update 
-const updateMember =  async(req:Request)=>{
-    const bookupdateResult =  await prisma.member.update({
+const updateUser =  async(req:Request)=>{
+    const userData =  await prisma.user.update({
         where: {
-            memberId: req.params.memberId
+            id: req.params.userId
         },
             data: req.body
         
     })
 
-    return bookupdateResult;
+    return userData;
     
 }
 
 // delete 
-const deleteMember =  async(req:Request)=>{
+const deleteUser =  async(req:Request)=>{
 
     try{
-        const isNotExitsMember = await prisma.member.findUnique({
+        const isNotExitsMember = await prisma.user.findUnique({
             where:{
-                memberId: req.params.memberId
+                id: req.params.userId
             }
         })
     
         if(!isNotExitsMember){
-             throw new Error("Member not found")
+             throw new Error("User not found")
         }
     
-        const bookdeletedResult =  await prisma.member.delete({
+        const result =  await prisma.user.delete({
             where: {
-                memberId: req.params.memberId
+                id: req.params.userId
             },
                
             
         })
     
-        return bookdeletedResult;
+        return result;
+    }catch(err){
+        throw new Error("An error occurred while deleting the member")
+    }
+    
+}
+
+const suspendUser =  async(req:Request)=>{
+
+    try{
+        const isNotExitsMember = await prisma.user.findUnique({
+            where:{
+                id: req.params.userId
+            }
+        })
+    
+        if(!isNotExitsMember){
+             throw new Error("User not found")
+        }
+    
+        const result =  await prisma.user.update({
+            where: {
+                id: req.params.userId
+            },
+            data:{
+                status: "BLOCKED"
+            }
+               
+            
+        })
+    
+        return result;
     }catch(err){
         throw new Error("An error occurred while deleting the member")
     }
@@ -127,6 +170,7 @@ export const userServices = {
     createUser,
     getAllUsers,
     getAUsers,
-    updateMember,
-    deleteMember
+    updateUser,
+    deleteUser,
+    suspendUser
 }

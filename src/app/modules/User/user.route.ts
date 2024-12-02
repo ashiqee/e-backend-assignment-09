@@ -2,6 +2,8 @@ import express, { NextFunction, Request, Response } from "express";
 import { usersControllers } from "./user.controller";
 import { fileUploader } from "../../../helpers/fileUploader";
 import { userValidation } from "./user.validation";
+import auth from "../../middlewares/auth";
+import { UserRole } from "@prisma/client";
 
 
 
@@ -19,7 +21,18 @@ fileUploader.upload.single('file'),
 }
  )
 
-router.get('/',usersControllers.getAllUsers)
+router.get('/',auth(UserRole.ADMIN),usersControllers.getAllUsers)
+
+router.get('/:userId',usersControllers.getAUsers)
+
+router.put("/update/:userId",
+auth(UserRole.ADMIN,UserRole.CUSTOMER,UserRole.VENDOR),
+    fileUploader.upload.single('file'),
+(req: Request, res: Response, next: NextFunction) => {
+    req.body = userValidation.updateUser.parse(JSON.parse(req.body.data))
+    return usersControllers.updateAUser(req, res, next)
+}
+)
 
 
 
