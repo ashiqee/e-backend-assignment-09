@@ -1,13 +1,17 @@
 import { Request } from "express";
-import prisma from "../../share/prisma";
+import * as bcrypt from 'bcrypt'
+import prisma from "../../../share/prisma";
+import { fileUploader } from "../../../helpers/fileUploader";
+import { IFile } from "../../interfaces/file";
 
 
 
 const createUser = async (req:Request)=>{
 
+   
     const isNotExitsMember = await prisma.user.findUnique({
         where:{
-            email: req.body.email
+            email: req.body.user.email
         }
     })
 
@@ -15,11 +19,43 @@ const createUser = async (req:Request)=>{
          throw new Error("User is already exits")
     }
 
-    const memberData = await prisma.user.create({
-        data: req.body
+    const file = req.file as IFile;
+
+    let profilePhoto = null
+    if(file){
+        const uploadCloudinary = await fileUploader.uploadToCloudinary(file);
+        profilePhoto = uploadCloudinary?.secure_url
+    }
+
+    const hashedPassword: string = await bcrypt.hash(req.body.password,12);
+
+    const userData = {
+        fullName: req.body.user.fullName,
+        email: req.body.user.email,
+        contactNumber: req.body.user.contactNumber,
+        role: req.body.user.role,
+        profilePhoto: profilePhoto,
+        password: hashedPassword
+    }
+
+  
+    
+
+    const result = await prisma.user.create({
+        data: userData,
+        select:{
+            id:true,
+            email:true,
+            fullName:true,
+            role:true,
+            status:true,
+            createdAt:true,
+            updatedAt:true,
+            
+        }
     })
 
-    return memberData;
+    return result;
     
 }
 

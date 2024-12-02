@@ -18,6 +18,8 @@ model User {
   email              String       @unique
   fullName           String
   profilePhoto       String?
+  contactNumber      String?
+  address            String?
   password           String
   role               UserRole     @default(CUSTOMER)
   needPasswordChange Boolean      @default(true)

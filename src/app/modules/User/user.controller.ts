@@ -1,7 +1,7 @@
 
 import { Request, Response } from "express";
-import catchAsync from "../../share/catchAsync";
-import sendResponse from "../../share/sendResponse";
+import catchAsync from "../../../share/catchAsync";
+import sendResponse from "../../../share/sendResponse";
 import httpStatus from "http-status";
 import { userServices } from "./user.service";
 
@@ -28,7 +28,7 @@ const getAllUsers = catchAsync(async(req:Request,res:Response)=>{
         success:true,
         status: httpStatus.OK,
         message:"Get all Users retrived succesfully",
-        data: result
+        data: "created Success"
     })
 })
 
