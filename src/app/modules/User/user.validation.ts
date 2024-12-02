@@ -12,6 +12,8 @@ const createUser = z.object({
         email: z.string({
             required_error: "Email is required!"
         }),
+        contactNumber: z.string().optional(),
+        address: z.string().optional(),
         role: z.string({
             required_error: "Role is required!"
           })

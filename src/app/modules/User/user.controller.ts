@@ -11,13 +11,15 @@ import { userServices } from "./user.service";
 
 const createUser = catchAsync( async( req: Request,res: Response)=>{
     
+ 
 const result =  await userServices.createUser(req)
+
 
     sendResponse(res,{
         success:true,
         status: httpStatus.OK,
         message:"User created succesfully",
-        data: result
+        data: result && "created Success"
     })
 } )
 
@@ -28,7 +30,7 @@ const getAllUsers = catchAsync(async(req:Request,res:Response)=>{
         success:true,
         status: httpStatus.OK,
         message:"Get all Users retrived succesfully",
-        data: "created Success"
+        data: result
     })
 })
 

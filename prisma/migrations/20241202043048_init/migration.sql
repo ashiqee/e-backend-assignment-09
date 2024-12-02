@@ -13,6 +13,8 @@ CREATE TABLE "User" (
     "email" TEXT NOT NULL,
     "fullName" TEXT NOT NULL,
     "profilePhoto" TEXT,
+    "contactNumber" TEXT,
+    "address" TEXT,
     "password" TEXT NOT NULL,
     "role" "UserRole" NOT NULL DEFAULT 'CUSTOMER',
     "needPasswordChange" BOOLEAN NOT NULL DEFAULT true,

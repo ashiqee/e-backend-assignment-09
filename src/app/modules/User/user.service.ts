@@ -35,6 +35,7 @@ const createUser = async (req:Request)=>{
         contactNumber: req.body.user.contactNumber,
         role: req.body.user.role,
         profilePhoto: profilePhoto,
+        address:req.body.user.address,
         password: hashedPassword
     }
 
@@ -67,14 +68,14 @@ const getAllUsers = async ()=>{
 }
 
 
-const getAMember =  async(req:Request)=>{
-    const bookResult =  await prisma.user.findUniqueOrThrow({
+const getAUsers =  async(req:Request)=>{
+    const user =  await prisma.user.findUniqueOrThrow({
         where: {
             id: req.params.userId
         }
     })
 
-    return bookResult;
+    return user;
     
 }
 
@@ -125,7 +126,7 @@ const deleteMember =  async(req:Request)=>{
 export const userServices = {
     createUser,
     getAllUsers,
-    getAMember,
+    getAUsers,
     updateMember,
     deleteMember
 }
