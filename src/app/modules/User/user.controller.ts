@@ -62,12 +62,29 @@ const updateAUser = catchAsync( async( req: Request,res: Response)=>{
     
 
 
+const suspendAUser = catchAsync( async( req: Request,res: Response)=>{
+    
+ 
+    const result =  await userServices.suspendUser(req)
+    
+    
+        sendResponse(res,{
+            success:true,
+            status: httpStatus.OK,
+            message:"User suspended succesfully",
+            data: result 
+        })
+    } )
+    
+
+
 
 
 export const usersControllers = {
     createUser,
     getAllUsers,
     getAUsers,
-    updateAUser
+    updateAUser,
+    suspendAUser
     
 }

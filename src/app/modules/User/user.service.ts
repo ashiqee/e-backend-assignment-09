@@ -105,6 +105,8 @@ const updateUser =  async(req:Request)=>{
     
 }
 
+
+
 // delete 
 const deleteUser =  async(req:Request)=>{
 

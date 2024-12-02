@@ -34,6 +34,11 @@ auth(UserRole.ADMIN,UserRole.CUSTOMER,UserRole.VENDOR),
 }
 )
 
+router.put("/suspend/:userId",
+auth(UserRole.ADMIN),
+usersControllers.suspendAUser
+)
+
 
 
 export const UsersRoutes = router;
