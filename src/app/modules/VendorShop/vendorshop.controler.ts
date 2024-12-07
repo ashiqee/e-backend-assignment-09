@@ -1,0 +1,27 @@
+import httpStatus from "http-status"
+import catchAsync from "../../../share/catchAsync"
+import sendResponse from "../../../share/sendResponse"
+import { NextFunction, Request, Response } from "express"
+import { vendorShopServices } from "./vendorshop.service"
+import { CreateShopRequest } from "./vedorshop.interface"
+import { userServices } from "../User/user.service"
+
+
+
+
+const createShopInDB = catchAsync(async (req: Request, res: Response) => {
+
+ 
+    
+    const result = await vendorShopServices.createShop(req);
+    sendResponse(res, {
+        status: httpStatus.OK,
+        success: true,
+        message: "Shop Created successfuly!",
+        data: result
+    })
+});
+
+    export const shopControllers = {
+        createShopInDB
+    }

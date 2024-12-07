@@ -62,7 +62,20 @@ const createUser = async (req:Request)=>{
 
 
 const getAllUsers = async ()=>{
-    const allUsers = await prisma.user.findMany()
+    const allUsers = await prisma.user.findMany({
+        select:{
+            id:true,
+            email:true,
+            fullName:true,
+            role:true,
+            status:true,
+            profilePhoto:true,
+            createdAt:true,
+            updatedAt:true,
+            
+        }
+    })
+    
 
     return allUsers;
 }

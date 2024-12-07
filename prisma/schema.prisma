@@ -31,21 +31,35 @@ model User {
   cartItems          CartItem[]
   followedShops      VendorShop[] @relation("UserFollowedShops")
   vendorShops        VendorShop[]
+
+  @@index([email])
+  @@index([status])
+  @@map("users")
 }
 
 model VendorShop {
   id          Int       @id @default(autoincrement())
   name        String    @unique
-  logoUrl     String?
+  logo         String?
   description String?
   ownerId     String
+  status      VendorShopStatus @default(ACTIVE)
   owner       User      @relation(fields: [ownerId], references: [id])
   products    Product[]
   followers   User[]    @relation("UserFollowedShops")
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
+
+
+  @@index([name])
+  @@map("vendorshop")
 }
 
+enum VendorShopStatus {
+  ACTIVE
+  BLACKLISTED
+}
+ 
 model Product {
   id             Int         @id @default(autoincrement())
   name           String
@@ -63,6 +77,8 @@ model Product {
   createdAt      DateTime    @default(now())
   updatedAt      DateTime    @updatedAt
   OrderItem      OrderItem[]
+
+  @@map("products")
 }
 
 model Category {
@@ -71,6 +87,9 @@ model Category {
   products  Product[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
+
+
+  @@map("categories")
 }
 
 model Order {
@@ -82,6 +101,8 @@ model Order {
   orderItems  OrderItem[]
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
+
+  @@map("orders")
 }
 
 model OrderItem {
@@ -92,6 +113,8 @@ model OrderItem {
   product   Product @relation(fields: [productId], references: [id])
   quantity  Int
   price     Float
+
+  @@map("orderItems")
 }
 
 model Review {
@@ -104,6 +127,8 @@ model Review {
   user      User     @relation(fields: [userId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@map("reviews")
 }
 
 model CartItem {
@@ -113,6 +138,8 @@ model CartItem {
   productId Int
   product   Product @relation(fields: [productId], references: [id])
   quantity  Int
+
+  @@map("cartItems")
 }
 
 model Coupon {
@@ -123,6 +150,8 @@ model Coupon {
   isActive           Boolean  @default(true)
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt
+
+  @@map("coupon")
 }
 
 enum UserRole {
