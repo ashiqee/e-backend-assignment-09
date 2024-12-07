@@ -21,6 +21,7 @@ model User {
   contactNumber      String?
   address            String?
   password           String
+  isDeleted          Boolean @default(false)
   role               UserRole     @default(CUSTOMER)
   needPasswordChange Boolean      @default(true)
   status             UserStatus   @default(ACTIVE)
@@ -45,8 +46,10 @@ model VendorShop {
   description String?
   ownerId     String
   status      VendorShopStatus @default(ACTIVE)
+  isDeleted   Boolean @default(false)
   owner       User      @relation(fields: [ownerId], references: [id])
   products    Product[]
+  orders      Order[]   @relation("VendorAllOrders")
   followers   User[]    @relation("UserFollowedShops")
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
@@ -69,6 +72,7 @@ model Product {
   imageUrl       String
   inventoryCount Int
   discount       Float?
+  isDelected      Boolean @default(false)
   categoryId     Int
   category       Category    @relation(fields: [categoryId], references: [id])
   vendorShopId   Int
@@ -110,10 +114,12 @@ model Category {
 model Order {
   id          Int         @id @default(autoincrement())
   userId      String
+  vendorShopId Int
   user        User        @relation(fields: [userId], references: [id])
   totalPrice  Float
   orderStatus OrderStatus
   orderItems  OrderItem[]
+  vendorShop  VendorShop  @relation("VendorAllOrders",fields: [vendorShopId], references: [id]            )
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
 

@@ -1,4 +1,4 @@
-import { User, VendorShop } from "@prisma/client";
+import { User, VendorShop, VendorShopStatus } from "@prisma/client";
 import { fileUploader } from "../../../helpers/fileUploader";
 import prisma from "../../../share/prisma";
 import { IFile } from "../../interfaces/file";
@@ -65,7 +65,7 @@ if (isNaN(vendorShopId)) {
     throw new Error("Invalid vendor shop ID");
 }
 
-    const shopUpdateData = req.body;
+
     const file =req.file as IFile;
     let logo: string|null = null
     if(file){
@@ -99,7 +99,21 @@ const getAllShop = async ()=>{
 }
 
 
-
+const getShopByVendorId = async (req: Request) =>{
+    const result = await prisma.vendorShop.findUniqueOrThrow({
+        where: {
+          id: req.body.id,
+          status: VendorShopStatus.ACTIVE,
+          isDeleted : false
+        },
+        include: {
+            products:true,
+            orders:true,
+            followers:true
+            
+        }
+    })
+}
 
 
 export const vendorShopServices = {

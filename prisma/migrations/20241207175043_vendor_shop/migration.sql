@@ -83,6 +83,7 @@ CREATE TABLE "categories" (
 CREATE TABLE "orders" (
     "id" SERIAL NOT NULL,
     "userId" TEXT NOT NULL,
+    "vendorShopId" INTEGER NOT NULL,
     "totalPrice" DOUBLE PRECISION NOT NULL,
     "orderStatus" "OrderStatus" NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -196,6 +197,9 @@ ALTER TABLE "recent_products" ADD CONSTRAINT "recent_products_productId_fkey" FO
 
 -- AddForeignKey
 ALTER TABLE "orders" ADD CONSTRAINT "orders_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "orders" ADD CONSTRAINT "orders_vendorShopId_fkey" FOREIGN KEY ("vendorShopId") REFERENCES "vendorshop"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "orderItems" ADD CONSTRAINT "orderItems_orderId_fkey" FOREIGN KEY ("orderId") REFERENCES "orders"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
