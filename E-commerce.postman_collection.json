@@ -1,0 +1,478 @@
+{
+	"info": {
+		"_postman_id": "5e7f0d10-8798-42e9-857a-6d8662f9138f",
+		"name": "E-commerce",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "30613446"
+	},
+	"item": [
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Get all Users",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImtleWFzaGlxQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTczMzEyNDA4MCwiZXhwIjoxNzM1NzE2MDgwfQ.NBw7pmkUa3dJazzD-XjuPEHJPLoVZJthnGMR9kHyZGM",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5000/api/v1/users/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"users",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create A User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/C:/Users/Ashiq-LMS/Downloads/WEB_ASSEST/profile.jpg"
+								},
+								{
+									"key": "data",
+									"value": "   {\n        \"password\": \"SecurePassword123\",\n        \"user\": {\n          \"fullName\": \"Jane Doe\",\n          \"email\": \"jane.doe2@example.com\",\n          \"contactNumber\": \"+1234567890\",\n\"address\":\"Dhaka\",\n          \"role\": \"CUSTOMER\"\n         \n        }\n      }",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get A Users",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImtleWFzaGlxQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTczMzEyNDA4MCwiZXhwIjoxNzM1NzE2MDgwfQ.NBw7pmkUa3dJazzD-XjuPEHJPLoVZJthnGMR9kHyZGM",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5000/api/v1/users/d483413e-4b83-441d-b11e-121ba1debb5c",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"d483413e-4b83-441d-b11e-121ba1debb5c"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update A Users",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImtleWFzaGlxQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTczMzEyNDA4MCwiZXhwIjoxNzM1NzE2MDgwfQ.NBw7pmkUa3dJazzD-XjuPEHJPLoVZJthnGMR9kHyZGM",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": []
+								},
+								{
+									"key": "data",
+									"value": "{\n\"fullName\": \"Ashiqee\",\n\"contactNumber\": \"12345678\",\n\"address\":\"Dhaka\"\n         \n         \n        }",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1/users/update/d483413e-4b83-441d-b11e-121ba1debb5c",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"update",
+								"d483413e-4b83-441d-b11e-121ba1debb5c"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Suspend A Users",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImtleWFzaGlxQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTczMzEyNDA4MCwiZXhwIjoxNzM1NzE2MDgwfQ.NBw7pmkUa3dJazzD-XjuPEHJPLoVZJthnGMR9kHyZGM",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": [],
+									"disabled": true
+								},
+								{
+									"key": "data",
+									"value": "{\n\"fullName\": \"Ashiqee\",\n\"contactNumber\": \"12345678\",\n\"address\":\"Dhaka\"\n         \n         \n        }",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1/users/suspend/d483413e-4b83-441d-b11e-121ba1debb5c",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"suspend",
+								"d483413e-4b83-441d-b11e-121ba1debb5c"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Get all Users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/api/v1/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"jane.doe2@example.com\",\r\n    \"password\": \"SecurePassword123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1/auth/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Change Password",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImphbmUuZG9lMkBleGFtcGxlLmNvbSIsInJvbGUiOiJDVVNUT01FUiIsImlhdCI6MTczMzEyMTcxNywiZXhwIjoxNzM1NzEzNzE3fQ._dUhOEm30GalJMi3x8_4GuBy6yXQcWT8X2YsV52ImWw",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"oldPassword\": \"SecurePassword123\",\r\n    \"newPassword\":\"123456\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1/auth/change-password",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"change-password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "forgot-password",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"jane.doe2@example.com\",\r\n    \"password\": \"SecurePassword123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1/auth/forgot-password",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"forgot-password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "reset-password",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"jane.doe2@example.com\",\r\n    \"password\": \"SecurePassword123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1/auth/reset-password",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"reset-password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "refresh-token",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"jane.doe2@example.com\",\r\n    \"password\": \"SecurePassword123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1/auth/refresh-token",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"refresh-token"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "VendorShop",
+			"item": [
+				{
+					"name": "CreatAVendor Shop",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImtleWFzaGlxQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTczMzU2NTE1MywiZXhwIjoxNzM2MTU3MTUzfQ.MsFH2NkPYLOhkarCKBzqy1jSwDDEoIuixkFHX_opfOc",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": []
+								},
+								{
+									"key": "data",
+									"value": "{\n  \"shop\": {\n    \"name\": \"My Awesome Shop\",\n\"ownerId\":\"36527036-98f2-487d-9b00-14bbf38dfaae\",\n    \"description\": \"A shop that sells awesome products.\"\n    \n  }\n}\n",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1/vendorShop/create-vendor-shop/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"vendorShop",
+								"create-vendor-shop",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Vendor Shop",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImtleWFzaGlxQGdtYWlsLmNvbSIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTczMzU2NTE1MywiZXhwIjoxNzM2MTU3MTUzfQ.MsFH2NkPYLOhkarCKBzqy1jSwDDEoIuixkFHX_opfOc",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/C:/Users/Ashiq-LMS/Downloads/Ashiq.jpg"
+								},
+								{
+									"key": "data",
+									"value": "{\n  \"shop\": {\n    \"name\": \"Asgiqe Shop\",\n\"ownerId\":\"36527036-98f2-487d-9b00-14bbf38dfaae\",\n    \"description\": \"A shop that sells awesome products.\"\n    \n  }\n}\n",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1/vendorShop",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"vendorShop"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
