@@ -8,15 +8,13 @@ const createShopSchema = z.object({
         required_error: "Shop Name is required!",
       }),
       description: z.string().optional(),
-      ownerId: z.string({
-        required_error: "Shop Name is required!",
-      }),
+     
     }),
   });
 
 
 
-const updateShop = z.object({
+const updateShopSchema = z.object({
         name: z.string().optional(),
         description: z.string().optional(),
         
@@ -26,6 +24,6 @@ const updateShop = z.object({
 
 export const shopValidation = {
     createShopSchema,
-    updateShop,
+    updateShopSchema,
     
 }

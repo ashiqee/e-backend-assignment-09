@@ -23,6 +23,20 @@ router.post('/create-vendor-shop',
    
      );
 
+router.put('/updated-vendor-shop',  
+    auth(UserRole.ADMIN,UserRole.VENDOR),
+    fileUploader.upload.single('file'),
+    (req: Request, res: Response, next: NextFunction) => {
+        req.body = shopValidation.updateShopSchema.parse(
+            JSON.parse(req.body.data)
+        );
+        return shopControllers.updatedShopInDB(req, res, next);
+    },
+   
+     );
+
+
+     
 
 
 router.get('/',shopControllers.getAllShopFromDB)

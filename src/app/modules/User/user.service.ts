@@ -105,18 +105,40 @@ const getAUsers =  async(req:Request)=>{
 // update user role 
 
 // update 
-const updateUser =  async(req:Request)=>{
-    const userData =  await prisma.user.update({
-        where: {
-            id: req.params.userId
-        },
-            data: req.body
-        
-    })
+const updateUser = async (req: Request, res: Response) => {
+    try {
+        const { userId } = req.params;
+        const file = req.file as IFile | undefined;
 
-    return userData;
-    
-}
+        // Validate input
+        if (!userId) {
+            throw new Error("User is Not Found")
+        }
+
+        // Upload profile photo if provided
+        let profilePhoto: string | null = null;
+        if (file) {
+            const uploadCloudinary = await fileUploader.uploadToCloudinary(file);
+            profilePhoto = uploadCloudinary?.secure_url || null;
+        }
+
+        const updateData: Record<string, any> = { ...req.body };
+        if (profilePhoto) {
+            updateData.profilePhoto = profilePhoto;
+        }
+
+        // Update the user
+        const updatedUser = await prisma.user.update({
+            where: { id: userId },
+            data: updateData,
+        });
+
+        return updatedUser;
+    } catch (error) {
+        console.error('Error updating user:', error);
+      
+    }
+};
 
 
 

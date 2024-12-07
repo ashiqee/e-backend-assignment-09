@@ -31,6 +31,7 @@ model User {
   cartItems          CartItem[]
   followedShops      VendorShop[] @relation("UserFollowedShops")
   vendorShops        VendorShop[]
+  recentProducts     RecentProduct[]
 
   @@index([email])
   @@index([status])
@@ -74,11 +75,25 @@ model Product {
   vendorShop     VendorShop  @relation(fields: [vendorShopId], references: [id])
   reviews        Review[]
   cartItems      CartItem[]
+  recentProducts RecentProduct[]
+  OrderItem      OrderItem[]
   createdAt      DateTime    @default(now())
   updatedAt      DateTime    @updatedAt
-  OrderItem      OrderItem[]
 
   @@map("products")
+}
+
+model RecentProduct {
+  id String @id @unique @default(uuid())
+  userId String @unique
+  productId Int @unique
+  view DateTime @default(now())
+
+  user User @relation(fields: [userId],references: [id])
+  product Product @relation(fields: [productId],references: [id])
+
+  @@unique([userId,productId])
+  @@map("recent_products")
 }
 
 model Category {
