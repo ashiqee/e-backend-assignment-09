@@ -25,6 +25,8 @@ router.post('/create-vendor-shop',
 
 
 
+router.get('/',shopControllers.getAllShopFromDB)
+
 
 
      export const VendorShopsRoutes = router;

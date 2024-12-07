@@ -22,6 +22,25 @@ const createShopInDB = catchAsync(async (req: Request, res: Response) => {
     })
 });
 
+
+
+const getAllShopFromDB = catchAsync(async (req: Request, res: Response) => {
+
+ 
+    
+    const result = await vendorShopServices.getAllShop();
+    sendResponse(res, {
+        status: httpStatus.OK,
+        success: true,
+        message: "All Shop retrived successfuly!",
+        data: result
+    })
+});
+
+
+
+
     export const shopControllers = {
-        createShopInDB
+        createShopInDB,
+        getAllShopFromDB
     }

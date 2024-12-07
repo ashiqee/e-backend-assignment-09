@@ -27,7 +27,13 @@ const createShop  = async (req: Request)=>{
     const result = await prisma.vendorShop.create({
         data: vendorShopData,
         include :{
-            owner: true
+            owner: {
+                select:{
+                    fullName:true,
+                    email:true,
+                    profilePhoto:true,
+                }
+            }
         }
         
     })
@@ -37,8 +43,17 @@ const createShop  = async (req: Request)=>{
 
 
 
+const getAllShop = async ()=>{
+    const allShop = await prisma.vendorShop.findMany({})
+
+    return allShop
+}
+
+
+
 
 
 export const vendorShopServices = {
-    createShop
+    createShop,
+    getAllShop
 }
