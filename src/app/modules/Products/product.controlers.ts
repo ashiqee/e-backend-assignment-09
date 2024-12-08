@@ -21,6 +21,21 @@ const createProduct = catchAsync( async( req: Request ,res: Response)=>{
             data: result 
         })
     } )
+
+
+const updateProduct = catchAsync( async( req: Request ,res: Response)=>{
+    
+ 
+    const result =  await productServices.updateAProduct(req)
+    
+    
+        sendResponse(res,{
+            success:true,
+            status: httpStatus.OK,
+            message:"Product updated succesfully",
+            data: result 
+        })
+    } )
     
 const getAllProductFromDB = catchAsync( async( req: Request ,res: Response)=>{
    
@@ -72,5 +87,6 @@ export const prodcutControllers = {
     createProduct,
     getAllProductFromDB,
     getAProductFromDB,
-    deleteAProduct
+    deleteAProduct,
+    updateProduct
 }

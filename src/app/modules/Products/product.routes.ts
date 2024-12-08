@@ -21,13 +21,22 @@ fileUploader.upload.array('files', 5),
     req.body = productValidation.createProductSchema.parse(JSON.parse(req.body.data))
     return prodcutControllers.createProduct(req, res, next)
 }
- )
+ );
 
-router.get('/', prodcutControllers.getAllProductFromDB)
+router.patch('/update-product',  
+    auth(UserRole.ADMIN,UserRole.VENDOR),
+fileUploader.upload.array('files', 5),
+(req: Request, res: Response, next: NextFunction) => {       
+    req.body = productValidation.updateProductSchema.parse(JSON.parse(req.body.data))
+    return prodcutControllers.updateProduct(req, res, next)
+}
+ );
 
-router.get('/:id',prodcutControllers.getAProductFromDB)
+router.get('/', prodcutControllers.getAllProductFromDB);
 
-router.delete('/:id',prodcutControllers.deleteAProduct)
+router.get('/:id',prodcutControllers.getAProductFromDB);
+
+router.delete('/:id',prodcutControllers.deleteAProduct);
 
 
 

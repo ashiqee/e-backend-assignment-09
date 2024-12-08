@@ -15,10 +15,16 @@ const createProductSchema = z.object({
 });
 
 const updateProductSchema = z.object({
-        fullName: z.string().optional(),
-        contactNumber: z.string().optional(),
-        address: z.string().optional(),   
-});
+        id: z.number(),
+         name: z.string().optional(),
+        price: z.number().optional(),
+        description: z.string().optional(),
+        inventoryCount: z.number().int().optional(),
+        discount: z.number().nullable().optional(),
+        categoryId: z.number().int().optional(),
+        vendorShopId: z.number().int().optional(),
+})
+
 
 export const productValidation = {
     createProductSchema,
