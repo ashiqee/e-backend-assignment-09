@@ -73,7 +73,7 @@ model Product {
   flashSale     Boolean @default(false)
   inventoryCount Int  @default(0)
   discount       Float? @default(0)
-  isDelected      Boolean @default(false)
+  isDeleted      Boolean @default(false)
   categoryId     Int
   category       Category    @relation(fields: [categoryId], references: [id])
   vendorShopId   Int

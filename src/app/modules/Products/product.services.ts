@@ -3,11 +3,11 @@ import { fileUploader } from "../../../helpers/fileUploader";
 import prisma from "../../../share/prisma";
 import { IFile } from "../../interfaces/file";
 import { IAuthUser } from "../../interfaces/common";
-import { error } from "console";
+import { error, log } from "console";
 import pick from "../../../share/pick";
 import { productFilterableFields, productFilterableOptions, productSearchAbleFields } from "./product.constant";
 import { paginationHelper } from "../../../helpers/paginationHelper";
-import { Prisma } from "@prisma/client";
+import { Prisma, VendorShopStatus } from "@prisma/client";
 
 
 
@@ -15,7 +15,7 @@ const createAProduct = async (req:Request )=>{
    
    
     const files = req.files as IFile[];
-    const {product}= req.body;
+    const {product}= req.body; 
   
     
 
@@ -63,16 +63,18 @@ const getAllProducts = async (req:Request)=>{
     const filters = pick(req.query, productFilterableFields);
     const options = pick(req.query, productFilterableOptions)
 
+   
+
     const {page,limit,skip}= paginationHelper.calculatePagination(options);
     const {searchTerm,...filterData}= filters;
-     
-    const andConditions: Prisma.ProductWhereInput[]=[];
+    
+    const andConditions: Prisma.ProductWhereInput[]=[{ isDeleted: false },];
 
-    if(filters.searchTerm){
+    if(searchTerm){
         andConditions.push({
             OR: productSearchAbleFields.map(field=>({
                 [field]:{
-                    contains: filters.searchTerm,
+                    contains: searchTerm,
                     mode: 'insensitive'
                 }
             }))
@@ -91,6 +93,9 @@ const getAllProducts = async (req:Request)=>{
 
     const whereConditons: Prisma.ProductWhereInput = andConditions.length > 0 ? { AND: andConditions } : {};
 
+   
+    
+
     const allProducts = await prisma.product.findMany({
         where: whereConditons,
         skip,
@@ -106,11 +111,54 @@ const getAllProducts = async (req:Request)=>{
 }
 
 
+// get a product 
 
+const getAProduct = async (req: Request)=>{
+        const productId =parseInt(req.params.id)
+    const result = await prisma.product.findUniqueOrThrow({
+        where: {
+            id: productId,
+            isDeleted:false
+        }
+    })
+
+    return result;
+   
+}
+
+
+// Delete a product 
+
+const deleteAProduct = async (req: Request)=>{
+        const productId =parseInt(req.params.id)
+        await prisma.product.findUniqueOrThrow({
+            where: {
+              id:productId,
+              isDeleted: false,
+              vendorShop: {
+                isDeleted: false,
+                status: VendorShopStatus.ACTIVE,
+              },
+            },
+          });
+        
+          const softDeleteProduct = await prisma.product.update({
+            where: {
+              id:productId,
+            },
+            data: {
+              isDeleted: true,
+            },
+          });
+        
+          return softDeleteProduct;
+        };
 
 
 
 export const productServices = {
     createAProduct,
-    getAllProducts
+    getAllProducts,
+    getAProduct,
+    deleteAProduct
 }

@@ -25,7 +25,9 @@ fileUploader.upload.array('files', 5),
 
 router.get('/', prodcutControllers.getAllProductFromDB)
 
-// router.get('/:userId',prodcutControllers.getAUsers)
+router.get('/:id',prodcutControllers.getAProductFromDB)
+
+router.delete('/:id',prodcutControllers.deleteAProduct)
 
 
 

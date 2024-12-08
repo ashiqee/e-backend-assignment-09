@@ -23,7 +23,7 @@ const createProduct = catchAsync( async( req: Request ,res: Response)=>{
     } )
     
 const getAllProductFromDB = catchAsync( async( req: Request ,res: Response)=>{
-    console.log("HIT PROD");
+   
     
     const result =  await productServices.getAllProducts(req)
     
@@ -35,10 +35,42 @@ const getAllProductFromDB = catchAsync( async( req: Request ,res: Response)=>{
             data: result 
         })
     } )
+
+
+const getAProductFromDB = catchAsync( async( req: Request ,res: Response)=>{
+
+    
+    const result =  await productServices.getAProduct(req)
+    
+    
+        sendResponse(res,{
+            success:true,
+            status: httpStatus.OK,
+            message:"Product retrive succesfully",
+            data: result 
+        })
+    } )
+    
+
+const deleteAProduct = catchAsync( async( req: Request ,res: Response)=>{
+
+    
+    const result =  await productServices.deleteAProduct(req)
+    
+    
+        sendResponse(res,{
+            success:true,
+            status: httpStatus.OK,
+            message:"Product deleted succesfully",
+            data: result 
+        })
+    } )
     
 
 
 export const prodcutControllers = {
     createProduct,
-    getAllProductFromDB
+    getAllProductFromDB,
+    getAProductFromDB,
+    deleteAProduct
 }

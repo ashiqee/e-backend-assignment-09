@@ -1,7 +1,7 @@
 export const productSearchAbleFields: string[] = [
     'name',
     'description',
-    'category'
+  
 
 ]; // only for search term
 

@@ -108,7 +108,7 @@ const getShopByVendorId = async (req: Request) =>{
           status: VendorShopStatus.ACTIVE,
           isDeleted : false
         },
-        include: {
+        include: { 
             products:true,
             orders:true,
             followers:true
