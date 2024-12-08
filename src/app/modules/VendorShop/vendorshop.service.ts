@@ -100,9 +100,11 @@ const getAllShop = async ()=>{
 
 
 const getShopByVendorId = async (req: Request) =>{
-    const result = await prisma.vendorShop.findUniqueOrThrow({
+
+    const shopId = req.body.id
+        const result = await prisma.vendorShop.findUniqueOrThrow({
         where: {
-          id: req.body.id,
+          id: shopId,
           status: VendorShopStatus.ACTIVE,
           isDeleted : false
         },
@@ -113,11 +115,14 @@ const getShopByVendorId = async (req: Request) =>{
             
         }
     })
+
+    return result
 }
 
 
 export const vendorShopServices = {
     createShop,
     getAllShop,
-    updateVendorShop
+    updateVendorShop,
+    getShopByVendorId
 }

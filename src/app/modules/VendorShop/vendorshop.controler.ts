@@ -51,10 +51,24 @@ const getAllShopFromDB = catchAsync(async (req: Request, res: Response) => {
 });
 
 
+const getShopByVendorIdFromDB = catchAsync(async (req: Request, res: Response) => {
+
+    
+    const result = await vendorShopServices.getShopByVendorId(req);
+    sendResponse(res, {
+        status: httpStatus.OK,
+        success: true,
+        message: "Vendor Shop retrived successfuly!",
+        data: result
+    })
+});
+
+
 
 
     export const shopControllers = {
         createShopInDB,
         getAllShopFromDB,
-        updatedShopInDB
+        updatedShopInDB,
+        getShopByVendorIdFromDB
     }

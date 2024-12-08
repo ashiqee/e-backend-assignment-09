@@ -41,6 +41,8 @@ router.put('/updated-vendor-shop',
 
 router.get('/',shopControllers.getAllShopFromDB)
 
+router.get('/shop',shopControllers.getShopByVendorIdFromDB)
 
 
-     export const VendorShopsRoutes = router;
+
+export const VendorShopsRoutes = router;

@@ -3,6 +3,8 @@ import { fileUploader } from "../../../helpers/fileUploader";
 
 import auth from "../../middlewares/auth";
 import { UserRole } from "@prisma/client";
+import { productValidation } from "./product.validation";
+import { prodcutControllers } from "./product.controlers";
 
 
 
@@ -12,17 +14,18 @@ const router = express.Router();
 
 
 
-router.post('/',  
-fileUploader.upload.single('file'),
-(req: Request, res: Response, next: NextFunction) => {
-    req.body = userValidation.createUser.parse(JSON.parse(req.body.data))
-    return usersControllers.createUser(req, res, next)
+router.post('/create-product',  
+    auth(UserRole.ADMIN,UserRole.VENDOR),
+fileUploader.upload.array('files', 5),
+(req: Request, res: Response, next: NextFunction) => {       
+    req.body = productValidation.createProductSchema.parse(JSON.parse(req.body.data))
+    return prodcutControllers.createProduct(req, res, next)
 }
  )
 
-router.get('/',auth(UserRole.ADMIN),usersControllers.getAllUsers)
+router.get('/', prodcutControllers.getAllProductFromDB)
 
-router.get('/:userId',usersControllers.getAUsers)
+// router.get('/:userId',prodcutControllers.getAUsers)
 
 
 

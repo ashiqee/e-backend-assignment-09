@@ -63,6 +63,7 @@ const createUser = async (req:Request)=>{
 
 const getAllUsers = async ()=>{
     const allUsers = await prisma.user.findMany({
+       
         select:{
             id:true,
             email:true,
@@ -74,6 +75,7 @@ const getAllUsers = async ()=>{
             updatedAt:true,
             
         }
+       
     })
     
 
