@@ -44,9 +44,19 @@ const getAUsers = catchAsync(async(req:Request,res:Response)=>{
     })
 })
 
+const getMyProfileFromDb = catchAsync(async(req:Request,res:Response)=>{
+    const result = await userServices.getMyProfile(req)
+    sendResponse(res,{
+        success:true,
+        status: httpStatus.OK,
+        message:"Get My Profile retrived succesfully",
+        data: result
+    })
+})
 
 
-const updateAUser = catchAsync( async( req: Request,res: Response)=>{
+
+const updateAUser = catchAsync( async( req: Request, res: Response)=>{
     
  
     const result =  await userServices.updateUser(req)
@@ -85,6 +95,7 @@ export const usersControllers = {
     getAllUsers,
     getAUsers,
     updateAUser,
-    suspendAUser
+    suspendAUser,
+    getMyProfileFromDb
     
 }

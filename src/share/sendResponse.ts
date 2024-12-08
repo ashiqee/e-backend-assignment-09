@@ -10,7 +10,7 @@ const sendResponse = <T>(res: Response,jsonData:{
     
     
     res.status(jsonData.status).json({
-        succes:jsonData.success,
+        success:jsonData.success,
         status: jsonData.status,
         message:jsonData.message,
         data: jsonData.data || null || undefined

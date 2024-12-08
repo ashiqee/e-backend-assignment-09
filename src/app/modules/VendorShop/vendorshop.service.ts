@@ -101,7 +101,7 @@ const getAllShop = async ()=>{
 
 const getShopByVendorId = async (req: Request) =>{
 
-    const shopId = req.body.id
+    const shopId = parseInt(req.params.id)
         const result = await prisma.vendorShop.findUniqueOrThrow({
         where: {
           id: shopId,

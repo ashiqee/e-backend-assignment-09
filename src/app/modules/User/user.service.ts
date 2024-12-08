@@ -3,6 +3,7 @@ import * as bcrypt from 'bcrypt'
 import prisma from "../../../share/prisma";
 import { fileUploader } from "../../../helpers/fileUploader";
 import { IFile } from "../../interfaces/file";
+import { IAuthUser } from "../../interfaces/common";
 
 
 
@@ -104,10 +105,35 @@ const getAUsers =  async(req:Request)=>{
     
 }
 
+const getMyProfile =  async(req:Request & {user?: IAuthUser})=>{
+    const user = req.user;
+    const userInfo =  await prisma.user.findUniqueOrThrow({
+        where: {
+            email: user!.email
+        },
+        select:{
+            id:true,
+            email:true,
+            fullName:true,
+            profilePhoto:true,
+            contactNumber:true,
+            address:true,
+            role:true,
+            status:true,
+            vendorShops:true
+        },
+    })
+
+    return userInfo;
+    
+}
+
 // update user role 
 
+
+
 // update 
-const updateUser = async (req: Request, res: Response) => {
+const updateUser = async (req: Request) => {
     try {
         const { userId } = req.params;
         const file = req.file as IFile | undefined;
@@ -211,5 +237,6 @@ export const userServices = {
     getAUsers,
     updateUser,
     deleteUser,
-    suspendUser
+    suspendUser,
+    getMyProfile
 }

@@ -41,7 +41,7 @@ router.put('/updated-vendor-shop',
 
 router.get('/',shopControllers.getAllShopFromDB)
 
-router.get('/shop',shopControllers.getShopByVendorIdFromDB)
+router.get('/:id',shopControllers.getShopByVendorIdFromDB)
 
 
 
