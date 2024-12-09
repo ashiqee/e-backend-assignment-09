@@ -13,7 +13,7 @@ const router = express.Router();
 
 
 
-router.post('/',  
+router.post('/register',  
 fileUploader.upload.single('file'),
 (req: Request, res: Response, next: NextFunction) => {
     req.body = userValidation.createUser.parse(JSON.parse(req.body.data))
