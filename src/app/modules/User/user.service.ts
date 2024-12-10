@@ -4,6 +4,10 @@ import prisma from "../../../share/prisma";
 import { fileUploader } from "../../../helpers/fileUploader";
 import { IFile } from "../../interfaces/file";
 import { IAuthUser } from "../../interfaces/common";
+import { usersFilterableFields, usersFilterableOptions, usersSearchAbleFields } from "./user.constant";
+import pick from "../../../share/pick";
+import { paginationHelper } from "../../../helpers/paginationHelper";
+import { Prisma } from "@prisma/client";
 
 
 
@@ -62,9 +66,48 @@ const createUser = async (req:Request)=>{
 }
 
 
-const getAllUsers = async ()=>{
+const getAllUsers = async (req:Request)=>{
+
+    const filters = pick(req.query, usersFilterableFields);
+    const options = pick(req.query, usersFilterableOptions)
+    const {page,limit,skip}= paginationHelper.calculatePagination(options);
+    const {searchTerm , ...filterData} = filters;
+
+  
+    
+
+    const andConditions: Prisma.UserWhereInput[]=[{ isDeleted: false },];
+
+    if(searchTerm){
+        andConditions.push({
+            OR: usersSearchAbleFields.map(field=>({
+                [field]:{
+                    contains: searchTerm,
+                    mode: 'insensitive'
+                }
+            }))
+        })
+    }
+
+    if (Object.keys(filterData).length > 0) {
+        andConditions.push({
+            AND: Object.keys(filterData).map(key => ({
+                [key]: {
+                    equals: (filterData as any)[key]
+                }
+            }))
+        })
+    };
+
+    const whereConditons: Prisma.UserWhereInput = andConditions.length > 0 ? { AND: andConditions } : {};
+
+    console.log(whereConditons);
+    
+   
     const allUsers = await prisma.user.findMany({
-       
+        where: whereConditons,
+        skip,
+        take:limit,
         select:{
             id:true,
             email:true,
@@ -72,6 +115,8 @@ const getAllUsers = async ()=>{
             role:true,
             status:true,
             profilePhoto:true,
+            contactNumber:true,
+
             createdAt:true,
             updatedAt:true,
             
@@ -79,8 +124,20 @@ const getAllUsers = async ()=>{
        
     })
     
+    const total = await prisma.user.count({
+        where: whereConditons
+    })
 
-    return allUsers;
+
+
+    return {
+        paginateData:{
+            total,
+            limit,
+            page
+        },
+        data: allUsers
+    };
 }
 
 
