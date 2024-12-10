@@ -36,12 +36,15 @@ router.put('/updated-vendor-shop',
      );
 
 
-     
+router.delete('/',auth(UserRole.ADMIN,),shopControllers.deleteShopFromDB);
+
+router.put('/',auth(UserRole.ADMIN,),shopControllers.blacklistedShopInDB);
 
 
-router.get('/',shopControllers.getAllShopFromDB)
 
-router.get('/:id',shopControllers.getShopByVendorIdFromDB)
+router.get('/',shopControllers.getAllShopFromDB);
+
+router.get('/:id',shopControllers.getShopByVendorIdFromDB);
 
 
 

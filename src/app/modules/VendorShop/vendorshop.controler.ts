@@ -35,13 +35,24 @@ const updatedShopInDB = catchAsync(async (req: Request, res: Response) => {
     })
 });
 
+const deleteShopFromDB = catchAsync(async (req: Request, res: Response) => {
+
+    const result = await vendorShopServices.deleteVendorShop(req);
+    sendResponse(res, {
+        status: httpStatus.OK,
+        success: true,
+        message: "Shop deleted successfuly!",
+        data: result
+    })
+});
+
 
 
 const getAllShopFromDB = catchAsync(async (req: Request, res: Response) => {
 
  
     
-    const result = await vendorShopServices.getAllShop();
+    const result = await vendorShopServices.getAllShop(req);
     sendResponse(res, {
         status: httpStatus.OK,
         success: true,
@@ -64,11 +75,24 @@ const getShopByVendorIdFromDB = catchAsync(async (req: Request, res: Response) =
 });
 
 
+const blacklistedShopInDB = catchAsync(async (req: Request, res: Response) => {
+
+    const result = await vendorShopServices.blacklistShop(req);
+    sendResponse(res, {
+        status: httpStatus.OK,
+        success: true,
+        message: "Shop blacklisted successfuly!",
+        data: result
+    })
+});
+
 
 
     export const shopControllers = {
         createShopInDB,
         getAllShopFromDB,
         updatedShopInDB,
-        getShopByVendorIdFromDB
+        getShopByVendorIdFromDB,
+        blacklistedShopInDB,
+        deleteShopFromDB
     }

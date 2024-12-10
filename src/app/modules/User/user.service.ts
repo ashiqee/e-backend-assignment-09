@@ -231,13 +231,13 @@ const updateUser = async (req: Request) => {
 const deleteUser =  async(req:Request)=>{
 
     try{
-        const isNotExitsMember = await prisma.user.findUnique({
+        const isNotExitsUser = await prisma.user.findUnique({
             where:{
                 id: req.params.userId
             }
         })
     
-        if(!isNotExitsMember){
+        if(!isNotExitsUser){
              throw new Error("User not found")
         }
     
@@ -255,6 +255,8 @@ const deleteUser =  async(req:Request)=>{
     }
     
 }
+
+
 
 const suspendUser =  async(req:Request)=>{
 
