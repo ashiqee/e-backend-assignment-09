@@ -231,10 +231,10 @@ const getShopByVendorId = async (req: Request) =>{
 
 const blacklistShop = async (req:Request)=>{
 
-    const currentShopStatus = req.body.status
+    const shopId =parseInt(req.params.shopId)
     const existVendorShop = await prisma.vendorShop.findUniqueOrThrow({
         where:{
-            id: req.body.shopId,
+            id: shopId,
             isDeleted:false,
         }
     })
@@ -245,10 +245,10 @@ const blacklistShop = async (req:Request)=>{
 
     const blackListResult = await prisma.vendorShop.update({
         where: {
-            id: req.body.shopId
+            id: shopId
         },
         data:{
-            status: currentShopStatus ? VendorShopStatus.BLACKLISTED:VendorShopStatus.ACTIVE
+            status: existVendorShop.status === VendorShopStatus.ACTIVE ? VendorShopStatus.BLACKLISTED:VendorShopStatus.ACTIVE
         }
     })
 

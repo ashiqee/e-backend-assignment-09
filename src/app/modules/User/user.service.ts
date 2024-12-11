@@ -7,7 +7,7 @@ import { IAuthUser } from "../../interfaces/common";
 import { usersFilterableFields, usersFilterableOptions, usersSearchAbleFields } from "./user.constant";
 import pick from "../../../share/pick";
 import { paginationHelper } from "../../../helpers/paginationHelper";
-import { Prisma } from "@prisma/client";
+import { Prisma, UserStatus } from "@prisma/client";
 
 
 
@@ -231,7 +231,37 @@ const updateUser = async (req: Request) => {
 
 
 // delete 
-const deleteUser =  async(req:Request)=>{
+const deleteUser = async (req: Request) => {
+    try {
+      const userId = req.params.userId;
+  
+      const isNotExitsUser = await prisma.user.findUnique({
+        where: { id: userId },
+      });
+  
+      if (!isNotExitsUser) {
+        throw new Error("User not found");
+      }
+  
+      // Delete related data
+    
+      await prisma.vendorShop.deleteMany({ where: { ownerId: userId } });
+  
+      // Delete the user
+      const result = await prisma.user.delete({
+        where: { id: userId },
+      });
+  
+      return result;
+    } catch (err) {
+      throw new Error("An error occurred while deleting the user and related data");
+    }
+  };
+  
+
+
+
+const suspendUser =  async(req:Request)=>{
 
     try{
         const isNotExitsUser = await prisma.user.findUnique({
@@ -244,42 +274,12 @@ const deleteUser =  async(req:Request)=>{
              throw new Error("User not found")
         }
     
-        const result =  await prisma.user.delete({
-            where: {
-                id: req.params.userId
-            },
-               
-            
-        })
-    
-        return result;
-    }catch(err){
-        throw new Error("An error occurred while deleting the member")
-    }
-    
-}
-
-
-
-const suspendUser =  async(req:Request)=>{
-
-    try{
-        const isNotExitsMember = await prisma.user.findUnique({
-            where:{
-                id: req.params.userId
-            }
-        })
-    
-        if(!isNotExitsMember){
-             throw new Error("User not found")
-        }
-    
         const result =  await prisma.user.update({
             where: {
                 id: req.params.userId
             },
             data:{
-                status: "BLOCKED"
+                status: isNotExitsUser.status === "ACTIVE" ? UserStatus.SUSPEND : UserStatus.ACTIVE
             }
                
             

@@ -74,6 +74,8 @@ const updateAUser = catchAsync( async( req: Request, res: Response)=>{
 
 const suspendAUser = catchAsync( async( req: Request,res: Response)=>{
     
+    console.log("HIT SUSPEND");
+    
  
     const result =  await userServices.suspendUser(req)
     
@@ -82,6 +84,20 @@ const suspendAUser = catchAsync( async( req: Request,res: Response)=>{
             success:true,
             status: httpStatus.OK,
             message:"User suspended succesfully",
+            data: result 
+        })
+    } )
+    
+const deleteAUserFromDB = catchAsync( async( req: Request,res: Response)=>{
+    
+ 
+    const result =  await userServices.deleteUser(req)
+    
+    
+        sendResponse(res,{
+            success:true,
+            status: httpStatus.OK,
+            message:"User deleted succesfully",
             data: result 
         })
     } )
@@ -96,6 +112,7 @@ export const usersControllers = {
     getAUsers,
     updateAUser,
     suspendAUser,
-    getMyProfileFromDb
+    getMyProfileFromDb,
+    deleteAUserFromDB
     
 }

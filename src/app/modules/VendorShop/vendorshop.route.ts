@@ -38,7 +38,7 @@ router.put('/updated-vendor-shop',
 
 router.delete('/',auth(UserRole.ADMIN,),shopControllers.deleteShopFromDB);
 
-router.put('/',auth(UserRole.ADMIN,),shopControllers.blacklistedShopInDB);
+router.delete('/blacklist/:shopId',auth(UserRole.ADMIN,),shopControllers.blacklistedShopInDB);
 
 
 

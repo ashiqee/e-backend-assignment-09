@@ -47,7 +47,7 @@ model VendorShop {
   ownerId     String
   status      VendorShopStatus @default(ACTIVE)
   isDeleted   Boolean @default(false)
-  owner       User      @relation(fields: [ownerId], references: [id])
+  owner       User      @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   products    Product[]
   orders      Order[]   @relation("VendorAllOrders")
   followers   User[]    @relation("UserFollowedShops")
@@ -75,9 +75,9 @@ model Product {
   discount       Float? @default(0)
   isDeleted      Boolean @default(false)
   categoryId     Int
-  category       Category    @relation(fields: [categoryId], references: [id])
+  category       Category    @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   vendorShopId   Int
-  vendorShop     VendorShop  @relation(fields: [vendorShopId], references: [id])
+  vendorShop     VendorShop  @relation(fields: [vendorShopId], references: [id], onDelete:Cascade)
   reviews        Review[]
   cartItems      CartItem[]
   recentProducts RecentProduct[]
@@ -94,8 +94,8 @@ model RecentProduct {
   productId Int @unique
   view DateTime @default(now())
 
-  user User @relation(fields: [userId],references: [id])
-  product Product @relation(fields: [productId],references: [id])
+  user User @relation(fields: [userId],references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId],references: [id] , onDelete: Cascade)
 
   @@unique([userId,productId])
   @@map("recent_products")
@@ -117,11 +117,11 @@ model Order {
   id          Int         @id @default(autoincrement())
   userId      String
   vendorShopId Int
-  user        User        @relation(fields: [userId], references: [id])
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   totalPrice  Float
   orderStatus OrderStatus
   orderItems  OrderItem[]
-  vendorShop  VendorShop  @relation("VendorAllOrders",fields: [vendorShopId], references: [id]            )
+  vendorShop  VendorShop  @relation("VendorAllOrders",fields: [vendorShopId], references: [id], onDelete: Cascade            )
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
 
@@ -131,9 +131,9 @@ model Order {
 model OrderItem {
   id        Int     @id @default(autoincrement())
   orderId   Int
-  order     Order   @relation(fields: [orderId], references: [id])
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
   productId Int
-  product   Product @relation(fields: [productId], references: [id])
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
   quantity  Int
   price     Float
 
@@ -145,9 +145,9 @@ model Review {
   rating    Int
   comment   String
   productId Int
-  product   Product  @relation(fields: [productId], references: [id])
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   userId    String
-  user      User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -157,9 +157,9 @@ model Review {
 model CartItem {
   id        Int     @id @default(autoincrement())
   userId    String
-  user      User    @relation(fields: [userId], references: [id])
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   productId Int
-  product   Product @relation(fields: [productId], references: [id])
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
   quantity  Int
 
   @@map("cartItems")
@@ -192,6 +192,5 @@ enum OrderStatus {
 
 enum UserStatus {
   ACTIVE
-  BLOCKED
-  DELETED
+  SUSPEND
 }

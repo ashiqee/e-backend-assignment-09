@@ -34,8 +34,11 @@ auth(UserRole.ADMIN,UserRole.CUSTOMER,UserRole.VENDOR),
     return usersControllers.updateAUser(req, res, next)
 }
 )
+router.delete('/delete/:userId',
+    auth(UserRole.ADMIN),
+    usersControllers.deleteAUserFromDB)
 
-router.put("/suspend/:userId",
+router.delete("/suspend/:userId",
 auth(UserRole.ADMIN),
 usersControllers.suspendAUser
 )
