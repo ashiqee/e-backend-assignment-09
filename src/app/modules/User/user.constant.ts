@@ -14,8 +14,7 @@
 export const usersSearchAbleFields: string[] = [
     'fullName',
     'contactNumber',
-    // 'status', // Enum field as string
-    // 'role',
+    
 ];
 
 

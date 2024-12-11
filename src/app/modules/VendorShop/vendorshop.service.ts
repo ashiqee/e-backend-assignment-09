@@ -128,7 +128,7 @@ const getAllShop = async (req:Request)=>{
     const whereConditons: Prisma.VendorShopWhereInput = andConditions.length > 0 ? { AND: andConditions } : {};
 
    
-    const allShop = await prisma.vendorShop.findMany({
+    const allShops = await prisma.vendorShop.findMany({
         where: whereConditons,
         skip,
         take:limit,
@@ -137,9 +137,24 @@ const getAllShop = async (req:Request)=>{
         } : {
             createdAt: 'desc'
         },
-   
+        include:{
+            owner:true,
+            orders:true,
+            products:true
+        }
   });
  
+  const transformedShops = allShops.map((shop) => ({
+    id: shop.id,
+    name: shop.name,
+    logo: shop.logo,
+    status:shop.status,
+    ownerName: shop.owner?.fullName || "N/A",
+    contactNumber: shop.owner?.contactNumber || "N/A",
+    totalOrders: shop.orders.length || 0,
+    totalProducts: shop.products.length || 0,
+  }));
+
 
     const total = await prisma.vendorShop.count({
         where: whereConditons
@@ -153,7 +168,7 @@ const getAllShop = async (req:Request)=>{
             limit,
             page
         },
-        data: allShop
+        data: transformedShops
     };
 }
 

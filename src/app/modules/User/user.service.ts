@@ -101,13 +101,16 @@ const getAllUsers = async (req:Request)=>{
 
     const whereConditons: Prisma.UserWhereInput = andConditions.length > 0 ? { AND: andConditions } : {};
 
-    console.log(whereConditons);
-    
-   
+    const sortBy = options.sortBy || 'createdAt'; 
+    const sortOrder = options.sortOrder === 'desc' ? 'desc' : 'asc'; 
+  
     const allUsers = await prisma.user.findMany({
         where: whereConditons,
         skip,
         take:limit,
+        orderBy: {
+            [sortBy as string]: sortOrder,
+          },
         select:{
             id:true,
             email:true,
