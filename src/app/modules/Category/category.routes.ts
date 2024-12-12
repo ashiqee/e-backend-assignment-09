@@ -16,7 +16,7 @@ const router = express.Router();
 
 
 
-router.post('/create-category',  
+router.post('/create',  
     auth(UserRole.ADMIN,UserRole.VENDOR),
     fileUploader.upload.single('file'),
 (req: Request, res: Response, next: NextFunction) => {       
@@ -29,7 +29,7 @@ router.get('/',categoryControllers.getAllCategoryFromDB)
 
 router.get('/:categoryId',categoryControllers.getOnlyCategoryFromDB)
 
-router.get('/update/:categoryId',
+router.patch('/update/:categoryId',
     auth(UserRole.ADMIN,UserRole.VENDOR),
     fileUploader.upload.single('file'),
 (req: Request, res: Response, next: NextFunction) => {       

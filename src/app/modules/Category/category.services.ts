@@ -17,6 +17,7 @@ const createACategory = async (req:Request )=>{
     
     const {category}= req.body;
   
+  
     
 
     const file =req.file as IFile;
@@ -30,6 +31,7 @@ const createACategory = async (req:Request )=>{
 
     const CategoryData = {
         name:category.name,
+        description: category.description,
         image: image 
     };
 
@@ -160,12 +162,20 @@ const deleteCategory = async (req: Request) => {
   const updateCategory = async (req: Request) => {
     try {
         const  categoryId  = parseInt(req.params.categoryId);
+        const isNotExitsCategory = await prisma.category.findUnique({
+            where: { id: categoryId },
+        });
+
+        if (!isNotExitsCategory) {
+            throw new Error("Category not found");
+        }
+
+
+
+       
         const file = req.file as IFile | undefined;
 
-        // Validate input
-        if (!categoryId) {
-            throw new Error("Category is Not Found")
-        }
+      
 
         // Upload profile photo if provided
         let image: string | null = null;
