@@ -62,7 +62,7 @@ const createShop  = async (req: Request  & {user?: IAuthUser})=>{
 
 const updateVendorShop = async (req:Request)=>{
 
-    const vendorShopId = parseInt(req.params.id, 10); // Convert string to number
+    const vendorShopId = parseInt(req.params.id); // Convert string to number
 
 if (isNaN(vendorShopId)) {
     throw new Error("Invalid vendor shop ID");
@@ -93,7 +93,7 @@ if (isNaN(vendorShopId)) {
 }
 
 
-
+// for addmin 
 
 const getAllShop = async (req:Request)=>{
 
@@ -172,6 +172,97 @@ const getAllShop = async (req:Request)=>{
     };
 }
 
+
+// for vendor 
+const getMyAllShop = async (req:Request & {user?: IAuthUser})=>{
+    console.log(">>>API HIT",req.user?.email);
+    
+    const isNotExitsUser = await prisma.user.findUniqueOrThrow({
+        where: {
+            email: req.user?.email
+        },
+        select: {
+            id: true
+        }
+    })
+   
+
+    const filters = pick(req.query, vendorShopFilterableFields);
+    const options = pick(req.query, vendorShopFilterableOptions)
+
+    const {sortBy, sortOrder,page,limit,skip}= paginationHelper.calculatePagination(options);
+    const {searchTerm,...filterData}= filters;
+    const andConditions: Prisma.VendorShopWhereInput[]=[{ isDeleted: false },{ownerId:isNotExitsUser.id}];
+
+    if(searchTerm){
+        andConditions.push({
+            OR: vendorShopSearchAbleFields.map(field=>({
+                [field]:{
+                    contains: searchTerm,
+                    mode: 'insensitive'
+                }
+            }))
+        })
+    }
+
+    if (Object.keys(filterData).length > 0) {
+        andConditions.push({
+            AND: Object.keys(filterData).map(key => ({
+                [key]: {
+                    equals: (filterData as any)[key]
+                }
+            }))
+        })
+    };
+
+    const whereConditons: Prisma.VendorShopWhereInput = andConditions.length > 0 ? { AND: andConditions } : {};
+
+   
+    const allShops = await prisma.vendorShop.findMany({
+        where: whereConditons,
+        skip,
+        take:limit,
+        orderBy: sortBy && sortOrder ? {
+            [sortBy as string]: sortOrder
+        } : {
+            createdAt: 'desc'
+        },
+        include:{
+            orders:true,
+            products:true,
+            followers:true
+        }
+  });
+
+ 
+ 
+  const transformedShops = allShops.map((shop) => ({
+    id: shop.id,
+    name: shop.name,
+    logo: shop.logo,
+    description:shop.description,
+    status:shop.status,
+    totalOrders: shop.orders.length || 0,
+    totalProducts: shop.products.length || 0,
+    totalFollorwers: shop.followers.length || 0,
+  }));
+
+
+    const total = await prisma.vendorShop.count({
+        where: whereConditons
+    })
+
+
+
+    return {
+        paginateData:{
+            total,
+            limit,
+            page
+        },
+        data: transformedShops
+    };
+}
 const deleteVendorShop = async (req:Request)=>{
    
         try{
@@ -261,5 +352,6 @@ export const vendorShopServices = {
     updateVendorShop,
     getShopByVendorId,
     deleteVendorShop,
-    blacklistShop
+    blacklistShop,
+    getMyAllShop
 }

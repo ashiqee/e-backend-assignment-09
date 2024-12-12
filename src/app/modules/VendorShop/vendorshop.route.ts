@@ -23,7 +23,7 @@ router.post('/create-vendor-shop',
    
      );
 
-router.put('/updated-vendor-shop',  
+router.patch('/update/:id',  
     auth(UserRole.ADMIN,UserRole.VENDOR),
     fileUploader.upload.single('file'),
     (req: Request, res: Response, next: NextFunction) => {
@@ -43,8 +43,13 @@ router.delete('/blacklist/:shopId',auth(UserRole.ADMIN,),shopControllers.blackli
 
 
 router.get('/',shopControllers.getAllShopFromDB);
+router.get('/vendor-shops',
+    auth(UserRole.VENDOR),
+    shopControllers.getAllMyShopFromDB);
 
 router.get('/:id',shopControllers.getShopByVendorIdFromDB);
+
+
 
 
 
