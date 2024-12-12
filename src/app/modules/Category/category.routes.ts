@@ -25,10 +25,24 @@ router.post('/create-category',
 }
  )
 
-// router.get('/',auth(UserRole.ADMIN),prodcutControllers.getAllUsers)
+router.get('/',categoryControllers.getAllCategoryFromDB)
 
-// router.get('/:userId',prodcutControllers.getAUsers)
+router.get('/:categoryId',categoryControllers.getOnlyCategoryFromDB)
 
+router.get('/update/:categoryId',
+    auth(UserRole.ADMIN,UserRole.VENDOR),
+    fileUploader.upload.single('file'),
+(req: Request, res: Response, next: NextFunction) => {       
+    req.body = categoryValidation.updateCategorySchema.parse(JSON.parse(req.body.data))
+    return categoryControllers.updateCategoryInDB(req, res, next)
+}
+ )
+
+
+ router.delete('/delete/:categoryId',
+    auth(UserRole.ADMIN,UserRole.VENDOR),
+    categoryControllers.deleteCategoryFromDB
+ )
 
 
 export const CategoryRoutes = router;
