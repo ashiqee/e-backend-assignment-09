@@ -27,6 +27,8 @@ router.post('/create',
 
 router.get('/',categoryControllers.getAllCategoryFromDB)
 
+router.get('/all',categoryControllers.getAllCategoryForPublicFromDB)
+
 router.get('/:categoryId',categoryControllers.getOnlyCategoryFromDB)
 
 router.patch('/update/:categoryId',

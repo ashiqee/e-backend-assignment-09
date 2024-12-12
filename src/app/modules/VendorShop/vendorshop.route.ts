@@ -10,8 +10,8 @@ import { UserRole } from "@prisma/client";
 
 const router = express.Router();
 
-router.post('/create-vendor-shop',  
-    auth(UserRole.ADMIN,UserRole.VENDOR),
+router.post('/create',  
+    auth(UserRole.VENDOR),
     fileUploader.upload.single('file'),
     (req: Request, res: Response, next: NextFunction) => {
                

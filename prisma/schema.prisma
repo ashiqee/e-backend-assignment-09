@@ -103,7 +103,7 @@ model RecentProduct {
 
 model Category {
   id        Int       @id @default(autoincrement())
-  name      String
+  name      String     @unique
   image     String?
   description String?
   isDeleted  Boolean @default(false)
@@ -111,7 +111,7 @@ model Category {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 
-
+  @@index([name])
   @@map("categories")
 }
 

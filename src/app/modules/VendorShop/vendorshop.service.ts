@@ -229,12 +229,24 @@ const getMyAllShop = async (req:Request & {user?: IAuthUser})=>{
         },
         include:{
             orders:true,
-            products:true,
+            products: {
+                include: {
+                  category: true, 
+                },
+              },
             followers:true
         }
   });
 
- 
+  const allProducts = allShops.flatMap(shop => shop.products);
+  const productsWithCategoryName = allProducts.map(product => ({
+    ...product,
+    categoryName: product.category?.name, 
+  }));
+
+
+  const allOrders = allShops.flatMap(shop => shop.orders);
+
  
   const transformedShops = allShops.map((shop) => ({
     id: shop.id,
@@ -260,7 +272,9 @@ const getMyAllShop = async (req:Request & {user?: IAuthUser})=>{
             limit,
             page
         },
-        data: transformedShops
+        shops: transformedShops,
+        products: productsWithCategoryName,
+        orders: allOrders,
     };
 }
 const deleteVendorShop = async (req:Request)=>{

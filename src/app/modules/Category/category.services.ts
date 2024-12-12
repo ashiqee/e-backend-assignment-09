@@ -17,7 +17,12 @@ const createACategory = async (req:Request )=>{
     
     const {category}= req.body;
   
-  
+   const isNotExitsCategory = await prisma.category.findUnique({
+        where: { name: category.name },
+    });
+    if (isNotExitsCategory) {
+        throw new Error("Category already exists");
+    }
     
 
     const file =req.file as IFile;
@@ -45,7 +50,18 @@ const createACategory = async (req:Request )=>{
     
 }
 
+const getAllCategoryFromDB = async ()=>{
+    const result = await prisma.category.findMany({
+        where: {
+            isDeleted: false,
+        },
+        include: {
+            products: true,
+        },
+    });
 
+    return result       
+   };
 
 
 const getAllCategory = async (req:Request)=>{
@@ -224,5 +240,6 @@ export const CategoryServices = {
     getAllCategory,
     deleteCategory,
     updateCategory,
-    getOnlyCategory
+    getOnlyCategory,
+    getAllCategoryFromDB
 }

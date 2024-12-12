@@ -30,7 +30,22 @@ const getAllCategoryFromDB = catchAsync( async( req: Request ,res: Response)=>{
         sendResponse(res,{
             success:true,
             status: httpStatus.OK,
-            message:"Categories retrived succesfully",
+            message:"All Categories retrived succesfully",
+            data: result 
+        })
+    } )
+
+
+const getAllCategoryForPublicFromDB = catchAsync( async( req: Request ,res: Response)=>{
+    
+ 
+    const result =  await CategoryServices.getAllCategoryFromDB()
+    
+    
+        sendResponse(res,{
+            success:true,
+            status: httpStatus.OK,
+            message:"ALL Public Categories retrived succesfully",
             data: result 
         })
     } )
@@ -84,5 +99,6 @@ export const categoryControllers = {
     getAllCategoryFromDB,
     updateCategoryInDB,
     deleteCategoryFromDB,
-    getOnlyCategoryFromDB
+    getOnlyCategoryFromDB,
+    getAllCategoryForPublicFromDB
 }
