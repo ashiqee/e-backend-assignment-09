@@ -49,6 +49,22 @@ const getAllProductFromDB = catchAsync( async( req: Request ,res: Response)=>{
             message:"Products retrive succesfully",
             data: result 
         })
+    } );
+
+
+
+const getAllVendorProductFromDB = catchAsync( async( req: Request ,res: Response)=>{
+   
+    
+    const result =  await productServices.getAllProducts(req)
+    
+    
+        sendResponse(res,{
+            success:true,
+            status: httpStatus.OK,
+            message:"All vendor Products retrive succesfully",
+            data: result 
+        })
     } )
 
 
@@ -88,5 +104,6 @@ export const prodcutControllers = {
     getAllProductFromDB,
     getAProductFromDB,
     deleteAProduct,
-    updateProduct
+    updateProduct,
+    getAllVendorProductFromDB
 }

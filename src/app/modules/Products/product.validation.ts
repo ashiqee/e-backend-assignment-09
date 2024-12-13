@@ -15,8 +15,7 @@ const createProductSchema = z.object({
 });
 
 const updateProductSchema = z.object({
-        id: z.number(),
-         name: z.string().optional(),
+        name: z.string().optional(),
         price: z.number().optional(),
         description: z.string().optional(),
         inventoryCount: z.number().int().optional(),

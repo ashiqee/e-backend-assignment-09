@@ -71,6 +71,7 @@ model Product {
   description    String
   images         String[]
   flashSale     Boolean @default(false)
+  salesQty        Int   @default(0)
   inventoryCount Int  @default(0)
   discount       Float? @default(0)
   isDeleted      Boolean @default(false)

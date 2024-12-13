@@ -1,9 +1,9 @@
 export const vendorShopSearchAbleFields: string[] = [
-    'name',
-    'description',
-    // 'status', // Enum field as string
-    // 'role',
+  'name',          // Shop name
+  'description',   // Shop description
+
 ];
+
 
 
 export const vendorShopFilterableOptions: string[] = [
@@ -15,6 +15,7 @@ export const vendorShopFilterableOptions: string[] = [
   ];
 
 
-export const vendorShopFilterableFields: string[] = [
-      'searchTerm'
-]; 
+  export const vendorShopFilterableFields: string[] = [
+    'searchTerm',    
+        
+];

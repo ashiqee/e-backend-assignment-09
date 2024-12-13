@@ -23,7 +23,7 @@ fileUploader.upload.array('files', 5),
 }
  );
 
-router.patch('/update-product',  
+router.patch('/update/:id',  
     auth(UserRole.ADMIN,UserRole.VENDOR),
 fileUploader.upload.array('files', 5),
 (req: Request, res: Response, next: NextFunction) => {       
@@ -33,6 +33,9 @@ fileUploader.upload.array('files', 5),
  );
 
 router.get('/', prodcutControllers.getAllProductFromDB);
+
+
+router.get('/vendor', auth(UserRole.VENDOR) , prodcutControllers.getAllVendorProductFromDB);
 
 router.get('/:id',prodcutControllers.getAProductFromDB);
 

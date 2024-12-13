@@ -174,109 +174,145 @@ const getAllShop = async (req:Request)=>{
 
 
 // for vendor 
-const getMyAllShop = async (req:Request & {user?: IAuthUser})=>{
-    console.log(">>>API HIT",req.user?.email);
-    
+const getMyAllShop = async (req: Request & { user?: IAuthUser }) => {
+   
+  
     const isNotExitsUser = await prisma.user.findUniqueOrThrow({
-        where: {
-            email: req.user?.email
-        },
-        select: {
-            id: true
-        }
-    })
-   
-
+      where: {
+        email: req.user?.email,
+      },
+      select: {
+        id: true,
+      },
+    });
+  
     const filters = pick(req.query, vendorShopFilterableFields);
-    const options = pick(req.query, vendorShopFilterableOptions)
-
-    const {sortBy, sortOrder,page,limit,skip}= paginationHelper.calculatePagination(options);
-    const {searchTerm,...filterData}= filters;
-    const andConditions: Prisma.VendorShopWhereInput[]=[{ isDeleted: false },{ownerId:isNotExitsUser.id}];
-
-    if(searchTerm){
+    const options = pick(req.query, vendorShopFilterableOptions);
+  
+    const { sortBy, sortOrder, page, limit, skip } = paginationHelper.calculatePagination(options);
+    const { searchTerm, ...filterData } = filters;
+    const andConditions: Prisma.VendorShopWhereInput[] = [
+      { isDeleted: false },
+      { ownerId: isNotExitsUser.id },
+    ];
+  
+    if (searchTerm) {
+        const searchString = String(searchTerm);
+    
+        console.log(searchString,"SEARCH STRING");
+        
         andConditions.push({
-            OR: vendorShopSearchAbleFields.map(field=>({
-                [field]:{
-                    contains: searchTerm,
-                    mode: 'insensitive'
-                }
-            }))
-        })
+            OR: [
+                ...vendorShopSearchAbleFields.map((field) => ({
+                    [field]: {
+                        contains: searchString,
+                        mode: 'insensitive',
+                    },
+                })),
+                {
+                    products: {
+                        some: {
+                            OR: [
+                                {
+                                    name: {
+                                        contains: searchString,
+                                        mode: 'insensitive',
+                                    },
+                                },
+                                {
+                                    category: {
+                                        name: {
+                                            contains: searchString,
+                                            mode: 'insensitive',
+                                        },
+                                    },
+                                },
+                            ],
+                        },
+                    },
+                },
+            ],
+        });
     }
-
+    
+  
     if (Object.keys(filterData).length > 0) {
-        andConditions.push({
-            AND: Object.keys(filterData).map(key => ({
-                [key]: {
-                    equals: (filterData as any)[key]
-                }
-            }))
-        })
-    };
-
+      andConditions.push({
+        AND: Object.keys(filterData).map((key) => ({
+          [key]: {
+            equals: (filterData as any)[key],
+          },
+        })),
+      });
+    }
+  
     const whereConditons: Prisma.VendorShopWhereInput = andConditions.length > 0 ? { AND: andConditions } : {};
+  
+    const allShops = await prisma.vendorShop.findMany({
+      where: whereConditons,
+      skip,
+      take: limit,
+      orderBy: sortBy && sortOrder
+        ? {
+            [sortBy as string]: sortOrder,
+          }
+        : {
+            createdAt: "desc",
+          },
+      include: {
+        orders: true,
+        products: {
+          include: {
+            category: true, // Include category details for mapping
+          },
+        },
+        followers: true,
+      },
+    });
 
    
-    const allShops = await prisma.vendorShop.findMany({
-        where: whereConditons,
-        skip,
-        take:limit,
-        orderBy: sortBy && sortOrder ? {
-            [sortBy as string]: sortOrder
-        } : {
-            createdAt: 'desc'
-        },
-        include:{
-            orders:true,
-            products: {
-                include: {
-                  category: true, 
-                },
-              },
-            followers:true
-        }
-  });
-
-  const allProducts = allShops.flatMap(shop => shop.products);
-  const productsWithCategoryName = allProducts.map(product => ({
-    ...product,
-    categoryName: product.category?.name, 
-  }));
-
-
-  const allOrders = allShops.flatMap(shop => shop.orders);
-
- 
-  const transformedShops = allShops.map((shop) => ({
-    id: shop.id,
-    name: shop.name,
-    logo: shop.logo,
-    description:shop.description,
-    status:shop.status,
-    totalOrders: shop.orders.length || 0,
-    totalProducts: shop.products.length || 0,
-    totalFollorwers: shop.followers.length || 0,
-  }));
-
-
+    
+  
+    const allProducts = allShops.flatMap((shop) => shop.products);
+    const productsWithCategoryName = allProducts.map((product) => ({
+      ...product,
+      categoryName: product.category?.name || "Uncategorized", // Add category name to products
+    }));
+  
+    const allOrders = allShops.flatMap((shop) => shop.orders);
+  
+    const transformedShops = allShops.map((shop) => ({
+      id: shop.id,
+      name: shop.name,
+      logo: shop.logo,
+      description: shop.description,
+      status: shop.status,
+      totalOrders: shop.orders.length || 0,
+      totalProducts: shop.products.length || 0,
+      totalFollowers: shop.followers.length || 0,
+    }));
+  
     const total = await prisma.vendorShop.count({
-        where: whereConditons
-    })
+      where: whereConditons,
+    });
 
-
-
+   
+  
     return {
-        paginateData:{
-            total,
-            limit,
-            page
-        },
-        shops: transformedShops,
-        products: productsWithCategoryName,
-        orders: allOrders,
+      paginateData: {
+        total,
+        limit,
+        page,
+      },
+      shops: transformedShops,
+      products: productsWithCategoryName,
+      orders: allOrders,
     };
-}
+  };
+  
+
+
+
 const deleteVendorShop = async (req:Request)=>{
    
         try{
