@@ -74,8 +74,6 @@ const updateAUser = catchAsync( async( req: Request, res: Response)=>{
 
 const suspendAUser = catchAsync( async( req: Request,res: Response)=>{
     
-    console.log("HIT SUSPEND");
-    
  
     const result =  await userServices.suspendUser(req)
     

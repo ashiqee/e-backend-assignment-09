@@ -64,9 +64,7 @@ const getAllShopFromDB = catchAsync(async (req: Request, res: Response) => {
 // for vendor 
 const getAllMyShopFromDB = catchAsync(async (req: Request, res: Response) => {
 
-    console.log("hello");
-    
- 
+   
     
     const result = await vendorShopServices.getMyAllShop(req);
     sendResponse(res, {

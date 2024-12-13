@@ -6,8 +6,7 @@ export const productSearchAbleFields: string[] = [
 ]; // only for search term
 
 export const productFilterableFields: string[] = [
-    'name',
-    'searchTerm'
+       'searchTerm'
 ]; // for all filtering 
 
 

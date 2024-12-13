@@ -103,12 +103,13 @@ const getAllProducts = async (req:Request)=>{
 
    
 
-    const {page,limit,skip}= paginationHelper.calculatePagination(options);
-    const {searchTerm,...filterData}= filters;
-    
+    const { sortBy, sortOrder, page, limit, skip } = paginationHelper.calculatePagination(options);
+    const { searchTerm, ...filterData } = filters;
+
     const andConditions: Prisma.ProductWhereInput[]=[{ isDeleted: false },];
 
     if(searchTerm){
+        const searchString = String(searchTerm);
         andConditions.push({
             OR: productSearchAbleFields.map(field=>({
                 [field]:{
@@ -144,10 +145,10 @@ const getAllProducts = async (req:Request)=>{
             createdAt: 'desc'
         },
         include:{
-            OrderItem:true,
             reviews:true,
             recentProducts:true,
-            category:true
+            category:true,
+            vendorShop:true,
      }
     })
 
@@ -161,7 +162,9 @@ const getAllProducts = async (req:Request)=>{
         category: product.category,
         flashSale: product.flashSale,
         description: product.description,
-        totalOrders: product.OrderItem.length || 0,
+        vendorShop: product.vendorShop,
+        reviews: product.reviews
+        
       }));
     
     
@@ -177,7 +180,7 @@ const getAllProducts = async (req:Request)=>{
                 limit,
                 page
             },
-            data: transformedProducts
+            products: transformedProducts
         };
 }
 const getAllVendorProducts = async (req:Request & {user?:IAuthUser} )=>{

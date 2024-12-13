@@ -199,7 +199,7 @@ const getMyAllShop = async (req: Request & { user?: IAuthUser }) => {
     if (searchTerm) {
         const searchString = String(searchTerm);
     
-        console.log(searchString,"SEARCH STRING");
+       
         
         andConditions.push({
             OR: [

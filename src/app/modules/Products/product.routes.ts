@@ -39,7 +39,7 @@ router.get('/vendor', auth(UserRole.VENDOR) , prodcutControllers.getAllVendorPro
 
 router.get('/:id',prodcutControllers.getAProductFromDB);
 
-router.delete('/:id',prodcutControllers.deleteAProduct);
+router.delete('/delete/:id',prodcutControllers.deleteAProduct);
 
 
 
