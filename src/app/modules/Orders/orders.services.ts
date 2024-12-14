@@ -32,7 +32,6 @@ const createOrderInDB = async (req: Request & { user?: IAuthUser }) => {
           data: {
               userId: user.id,
               totalPrice,
-              orderStatus: "PENDING",
               orderItems: {
                   create: cartItems.map((item: { productId: number; quantity: number; price: number }) => ({
                       productId: item.productId,

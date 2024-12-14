@@ -120,13 +120,21 @@ model Order {
   userId      String
   user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   totalPrice  Float
-  orderStatus OrderStatus  
+  paymentStatus PaymentStatus @default(UNPAID)
+  transactionId String?
+  orderStatus OrderStatus   @default(PENDING)
   orderItems  OrderItem[]
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
 
   @@map("orders")
 }
+
+enum PaymentStatus {
+  UNPAID
+  PAID
+}
+
 
 model OrderItem {
   id        Int     @id @default(autoincrement())
