@@ -33,23 +33,12 @@ router.post(
 
 
 
-// router.patch('/update/:id',  
-//     auth(UserRole.ADMIN,UserRole.VENDOR),
-// fileUploader.upload.array('files', 5),
-// (req: Request, res: Response, next: NextFunction) => {       
-//     req.body = productValidation.updateProductSchema.parse(JSON.parse(req.body.data))
-//     return prodcutControllers.updateProduct(req, res, next)
-// }
-//  );
 
 router.get('/',auth(UserRole.CUSTOMER), cartsControllers.getCartItems);
 
 
-// router.get('/vendor', auth(UserRole.VENDOR) , prodcutControllers.getAllVendorProductFromDB);
 
-// router.get('/:id',prodcutControllers.getAProductFromDB);
-
-// router.delete('/delete/:id',prodcutControllers.deleteAProduct);
+router.delete('/delete/:id',auth(UserRole.CUSTOMER), cartsControllers.deleteCartItems);
 
 
 
