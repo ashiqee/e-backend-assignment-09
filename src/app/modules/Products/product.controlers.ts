@@ -56,7 +56,7 @@ const getAllProductFromDB = catchAsync( async( req: Request ,res: Response)=>{
 const getAllVendorProductFromDB = catchAsync( async( req: Request ,res: Response)=>{
    
     
-    const result =  await productServices.getAllProducts(req)
+    const result =  await productServices.getAllVendorProducts(req)
     
     
         sendResponse(res,{

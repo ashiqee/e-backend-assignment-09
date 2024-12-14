@@ -5,57 +5,88 @@ import { IFile } from "../../interfaces/file";
 import { IAuthUser } from "../../interfaces/common";
 import { error, log } from "console";
 import pick from "../../../share/pick";
-import { productFilterableFields, productFilterableOptions, productSearchAbleFields } from "./product.constant";
+import { productFilterableFields, productFilterableOptions, productSearchAbleFields } from "./carts.constant";
 import { paginationHelper } from "../../../helpers/paginationHelper";
 import { Prisma, VendorShopStatus } from "@prisma/client";
 
 
 
-const createAProduct = async (req:Request )=>{
-   
-   
-    const files = req.files as IFile[];
-    const {product}= req.body; 
-  
-    
+const addToCartInDB = async (req: Request & { user?: IAuthUser }) => {
+    let { cart } = req.body; // Use 'let' for reassignment
 
-    const imageUrls: string[] = []
-    if(files && files.length > 0){
-        for (const file of files){
-            const uploadCloudinary = await fileUploader.uploadToCloudinary(file);
-            if(uploadCloudinary?.secure_url){
-                imageUrls.push(uploadCloudinary.secure_url)
-            }
 
-        }
-     
+    if (!Array.isArray(cart)) {
+        cart = [cart];
     }
 
-    const productData = {
-        name:product.name,
-        price:product.price,
-        description: product.description,
-        inventoryCount: product.inventoryCount,
-        images: imageUrls,
-        discount: product.discount,
-        categoryId:product.categoryId,
-        vendorShopId:product.vendorShopId
-    };
+    // Validate cart
+    if (cart.length === 0) {
+        throw new Error("Cart must be a non-empty array.");
+    }
 
-   
-    
-        const result = await prisma.product.create({
-            data: productData,
-            include:{
-                vendorShop:true,
-                category:true,
-            }
-        })
-    
+    // Validate user
+    const user = await prisma.user.findUniqueOrThrow({
+        where: { email: req.user?.email },
+        select: { id: true },
+    });
 
-    return result;
+    // Prepare cart data and process with upsert
+    const results = await prisma.$transaction(
+        cart.map((item:any) =>
+            prisma.cartItem.upsert({
+                where: {
+                    userId_productId: { userId: user.id, productId: item.productId },
+                },
+                update: {
+                    quantity: {
+                        increment: item.quantity, 
+                    },
+                },
+                create: {
+                    userId: user.id,
+                    productId: item.productId,
+                    quantity: item.quantity, 
+                },
+                
+            })
+        )
+    );
+
+    return results;
+};
+
+
+const getCartItems = async (req: Request & { user?: IAuthUser })=>{
+
+
+    // Validate user
+    const user = await prisma.user.findUniqueOrThrow({
+        where: { email: req.user?.email },
+        select: { id: true },
+    });
+
+
+    console.log(user);
     
+    
+const result = await prisma.cartItem.findMany({
+    where: {
+        userId: user.id,        
+    },
+    include: {
+            user: true,
+            product: true,
+        },
+    
+})
+
+console.log("CARTS",result);
+
+
+return result;
+
 }
+
 
 // update product 
 const updateAProduct = async (req:Request )=>{
@@ -335,8 +366,9 @@ const deleteAProduct = async (req: Request)=>{
 
 
 
-export const productServices = {
-    createAProduct,
+export const cartItemServices = {
+    addToCartInDB,
+    getCartItems,
     getAllProducts,
     getAProduct,
     deleteAProduct,
