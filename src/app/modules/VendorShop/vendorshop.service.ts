@@ -139,7 +139,6 @@ const getAllShop = async (req:Request)=>{
         },
         include:{
             owner:true,
-            orders:true,
             products:true
         }
   });
@@ -151,7 +150,6 @@ const getAllShop = async (req:Request)=>{
     status:shop.status,
     ownerName: shop.owner?.fullName || "N/A",
     contactNumber: shop.owner?.contactNumber || "N/A",
-    totalOrders: shop.orders.length || 0,
     totalProducts: shop.products.length || 0,
   }));
 
@@ -260,7 +258,7 @@ const getMyAllShop = async (req: Request & { user?: IAuthUser }) => {
             createdAt: "desc",
           },
       include: {
-        orders: true,
+       
         products: {
           include: {
             category: true, // Include category details for mapping
@@ -278,16 +276,15 @@ const getMyAllShop = async (req: Request & { user?: IAuthUser }) => {
       ...product,
       categoryName: product.category?.name || "Uncategorized", // Add category name to products
     }));
+
   
-    const allOrders = allShops.flatMap((shop) => shop.orders);
-  
+    
     const transformedShops = allShops.map((shop) => ({
       id: shop.id,
       name: shop.name,
       logo: shop.logo,
       description: shop.description,
       status: shop.status,
-      totalOrders: shop.orders.length || 0,
       totalProducts: shop.products.length || 0,
       totalFollowers: shop.followers.length || 0,
     }));
@@ -306,7 +303,7 @@ const getMyAllShop = async (req: Request & { user?: IAuthUser }) => {
       },
       shops: transformedShops,
       products: productsWithCategoryName,
-      orders: allOrders,
+      
     };
   };
   
@@ -359,7 +356,6 @@ const getShopByVendorId = async (req: Request) =>{
         },
         include: { 
             products:true,
-            orders:true,
             followers:true
             
         }
