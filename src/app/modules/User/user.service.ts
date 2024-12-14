@@ -180,7 +180,8 @@ const getMyProfile =  async(req:Request & {user?: IAuthUser})=>{
             address:true,
             role:true,
             status:true,
-            vendorShops:true
+            vendorShops:true,
+            orders:true,
         },
     })
 

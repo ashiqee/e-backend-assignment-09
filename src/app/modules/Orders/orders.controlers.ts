@@ -48,6 +48,19 @@ const getOrdersAllItems = catchAsync( async( req: Request ,res: Response)=>{
         })
     } )
 
+const getCustomerOrders = catchAsync( async( req: Request ,res: Response)=>{
+    
+    const result =  await OrdersServices.getCustomerOrderHistory(req)
+    
+    
+        sendResponse(res,{
+            success:true,
+            status: httpStatus.OK,
+            message:"All Customer Orders retrive succesfully",
+            data: result 
+        })
+    } )
+
 
 
 const cancelOrder = catchAsync( async( req: Request ,res: Response)=>{
@@ -68,6 +81,7 @@ const cancelOrder = catchAsync( async( req: Request ,res: Response)=>{
 export const ordersControllers = {
     createOrder,
     getOrdersAllItems,
-    cancelOrder
+    cancelOrder,
+    getCustomerOrders
   
 }

@@ -119,6 +119,41 @@ const itemsWithSubtotal = cartItems.map(item => {
 }
 
 
+const getCustomerOrderHistory = async (req: Request & { user?: IAuthUser }) => {
+  try {
+   
+    const user = await prisma.user.findUniqueOrThrow({
+      where: { email: req.user?.email },
+      select: { id: true }, 
+    });
+
+    // Fetch the user's order history
+    const orderHistory = await prisma.order.findMany({
+      where: { userId: user.id }, 
+      include: {
+        orderItems: {
+          include: {
+            product: {
+              select: {
+                id: true,
+                name: true,
+                price: true,
+                images: true,
+              },
+            },
+          },
+        },
+      },
+      orderBy: { createdAt: "desc" }, 
+    });
+
+    
+    return orderHistory;
+  } catch (error) {
+    console.error("Error fetching customer order history:", error);
+    throw new Error("Unable to fetch order history.");
+  }
+};
 
 
 
@@ -167,5 +202,6 @@ console.log(id);
 export const OrdersServices = {
     createOrderInDB,
     getOrderAllForAdmin,
-    cancelOrder
+    cancelOrder,
+    getCustomerOrderHistory,
 }

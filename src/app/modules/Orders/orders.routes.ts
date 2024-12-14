@@ -32,7 +32,7 @@ router.post(
   );
 
 
-
+router.get('/getUserOrders',auth(UserRole.CUSTOMER),ordersControllers.getCustomerOrders)
 
 
 export const OrdersRoutes = router;
