@@ -49,7 +49,6 @@ model VendorShop {
   isDeleted   Boolean @default(false)
   owner       User      @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   products    Product[]
-  orders      Order[]   @relation("VendorAllOrders")
   followers   User[]    @relation("UserFollowedShops")
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
@@ -119,12 +118,10 @@ model Category {
 model Order {
   id          Int         @id @default(autoincrement())
   userId      String
-  vendorShopId Int
   user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   totalPrice  Float
-  orderStatus OrderStatus
+  orderStatus OrderStatus  
   orderItems  OrderItem[]
-  vendorShop  VendorShop  @relation("VendorAllOrders",fields: [vendorShopId], references: [id], onDelete: Cascade            )
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
 
@@ -143,19 +140,7 @@ model OrderItem {
   @@map("orderItems")
 }
 
-model Review {
-  id        Int      @id @default(autoincrement())
-  rating    Int
-  comment   String
-  productId Int
-  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 
-  @@map("reviews")
-}
 
 model CartItem {
   id        Int     @id @default(autoincrement())
@@ -179,6 +164,20 @@ model Coupon {
   updatedAt          DateTime @updatedAt
 
   @@map("coupon")
+}
+
+model Review {
+  id        Int      @id @default(autoincrement())
+  rating    Int
+  comment   String
+  productId Int
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("reviews")
 }
 
 enum UserRole {
