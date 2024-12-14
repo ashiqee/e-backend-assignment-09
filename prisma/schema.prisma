@@ -116,19 +116,24 @@ model Category {
 }
 
 model Order {
-  id          Int         @id @default(autoincrement())
-  userId      String
-  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  totalPrice  Float
-  paymentStatus PaymentStatus @default(UNPAID)
+  id            Int            @id @default(autoincrement())
+  userId        String
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  totalPrice    Float
+  paymentStatus PaymentStatus  @default(UNPAID)
   transactionId String?
-  orderStatus OrderStatus   @default(PENDING)
-  orderItems  OrderItem[]
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  paymentMethod String?
+  orderStatus   OrderStatus    @default(PENDING)
+  orderItems    OrderItem[]
+  fullName      String         // Receiver's full name
+  mobile        String         // Receiver's mobile number
+  address       String         // Shipping address
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
 
   @@map("orders")
 }
+
 
 enum PaymentStatus {
   UNPAID

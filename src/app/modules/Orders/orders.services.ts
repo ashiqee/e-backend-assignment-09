@@ -32,6 +32,10 @@ const createOrderInDB = async (req: Request & { user?: IAuthUser }) => {
           data: {
               userId: user.id,
               totalPrice,
+              fullName: order.fullName,
+              mobile: order.mobile,
+              address: order.address,
+              paymentMethod:order.paymentMethod,
               orderItems: {
                   create: cartItems.map((item: { productId: number; quantity: number; price: number }) => ({
                       productId: item.productId,
@@ -44,6 +48,20 @@ const createOrderInDB = async (req: Request & { user?: IAuthUser }) => {
               orderItems: true, // Include order items in the response
           },
       });
+
+      for (const item of cartItems) {
+        await tx.product.update({
+            where: { id: item.productId },
+            data: {
+                inventoryCount: {
+                    decrement: item.quantity, 
+                },
+                salesQty: {
+                    increment: item.quantity, 
+                },
+            },
+        });
+    }
 
       // Delete cart items for the user
       await tx.cartItem.deleteMany({
