@@ -175,8 +175,7 @@ const getAllProducts = async (req:Request)=>{
         })
     
     
-        console.log(allProducts,'h1');
-    
+   
 
         return {
             paginateData:{

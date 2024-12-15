@@ -112,7 +112,6 @@ const deleteCartsItem = async (req: Request& {user?:IAuthUser}) => {
     const id = parseInt(req.params.id);  // Assuming `productIds` is an array of product IDs
   
 const productIds = [id]
-console.log(id);
 
     try {
 
