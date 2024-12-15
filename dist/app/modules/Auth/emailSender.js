@@ -28,7 +28,7 @@ const emailSender = (email, html) => __awaiter(void 0, void 0, void 0, function*
         }
     });
     const info = yield transporter.sendMail({
-        from: '"Ecommerce" <aittechbd@gmail.com>', // sender address
+        from: '"Kidz Bazar" <aittechbd@gmail.com>', // sender address
         to: email, // list of receivers
         subject: "Reset Password Link", // Subject line
         //text: "Hello world?", // plain text body

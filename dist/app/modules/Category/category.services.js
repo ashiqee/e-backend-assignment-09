@@ -24,7 +24,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CategoryServices = void 0;
-const fileUploader_1 = require("../../../helpers/fileUploader");
 const prisma_1 = __importDefault(require("../../../share/prisma"));
 const pick_1 = __importDefault(require("../../../share/pick"));
 const category_constant_1 = require("./category.constant");
@@ -40,8 +39,7 @@ const createACategory = (req) => __awaiter(void 0, void 0, void 0, function* () 
     const file = req.file;
     let image = null;
     if (file) {
-        const uploadCloudinary = yield fileUploader_1.fileUploader.uploadToCloudinary(file);
-        image = (uploadCloudinary === null || uploadCloudinary === void 0 ? void 0 : uploadCloudinary.secure_url) || null;
+        image = file.path;
     }
     const CategoryData = {
         name: category.name,
@@ -165,8 +163,7 @@ const updateCategory = (req) => __awaiter(void 0, void 0, void 0, function* () {
         // Upload profile photo if provided
         let image = null;
         if (file) {
-            const uploadCloudinary = yield fileUploader_1.fileUploader.uploadToCloudinary(file);
-            image = (uploadCloudinary === null || uploadCloudinary === void 0 ? void 0 : uploadCloudinary.secure_url) || null;
+            image = file.path;
         }
         const updateData = Object.assign({}, req.body);
         if (image) {

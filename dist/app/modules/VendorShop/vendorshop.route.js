@@ -5,17 +5,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.VendorShopsRoutes = void 0;
 const express_1 = __importDefault(require("express"));
-const fileUploader_1 = require("../../../helpers/fileUploader");
 const vendorshop_controler_1 = require("./vendorshop.controler");
 const vendorshop_validation_1 = require("./vendorshop.validation");
 const auth_1 = __importDefault(require("../../middlewares/auth"));
 const client_1 = require("@prisma/client");
+const multer_config_1 = require("../../../config/multer.config");
 const router = express_1.default.Router();
-router.post('/create', (0, auth_1.default)(client_1.UserRole.VENDOR), fileUploader_1.fileUploader.upload.single('file'), (req, res, next) => {
+router.post('/create', (0, auth_1.default)(client_1.UserRole.VENDOR), multer_config_1.multerUpload.single('file'), (req, res, next) => {
     req.body = vendorshop_validation_1.shopValidation.createShopSchema.parse(JSON.parse(req.body.data));
     return vendorshop_controler_1.shopControllers.createShopInDB(req, res, next);
 });
-router.patch('/update/:id', (0, auth_1.default)(client_1.UserRole.ADMIN, client_1.UserRole.VENDOR), fileUploader_1.fileUploader.upload.single('file'), (req, res, next) => {
+router.patch('/update/:id', (0, auth_1.default)(client_1.UserRole.ADMIN, client_1.UserRole.VENDOR), multer_config_1.multerUpload.single('file'), (req, res, next) => {
     req.body = vendorshop_validation_1.shopValidation.updateShopSchema.parse(JSON.parse(req.body.data));
     return vendorshop_controler_1.shopControllers.updatedShopInDB(req, res, next);
 });

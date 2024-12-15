@@ -24,30 +24,23 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.productServices = void 0;
-const fileUploader_1 = require("../../../helpers/fileUploader");
 const prisma_1 = __importDefault(require("../../../share/prisma"));
 const pick_1 = __importDefault(require("../../../share/pick"));
 const product_constant_1 = require("./product.constant");
 const paginationHelper_1 = require("../../../helpers/paginationHelper");
 const client_1 = require("@prisma/client");
 const createAProduct = (req) => __awaiter(void 0, void 0, void 0, function* () {
-    const files = req.files;
     const { product } = req.body;
-    const imageUrls = [];
-    if (files && files.length > 0) {
-        for (const file of files) {
-            const uploadCloudinary = yield fileUploader_1.fileUploader.uploadToCloudinary(file);
-            if (uploadCloudinary === null || uploadCloudinary === void 0 ? void 0 : uploadCloudinary.secure_url) {
-                imageUrls.push(uploadCloudinary.secure_url);
-            }
-        }
+    let imagesUpload = [];
+    if (Array.isArray(req === null || req === void 0 ? void 0 : req.files)) {
+        imagesUpload = req.files.map((file) => file === null || file === void 0 ? void 0 : file.path) || [];
     }
     const productData = {
         name: product.name,
         price: product.price,
         description: product.description,
         inventoryCount: product.inventoryCount,
-        images: imageUrls,
+        images: imagesUpload,
         discount: product.discount,
         categoryId: product.categoryId,
         vendorShopId: product.vendorShopId
@@ -65,17 +58,22 @@ const createAProduct = (req) => __awaiter(void 0, void 0, void 0, function* () {
 const updateAProduct = (req) => __awaiter(void 0, void 0, void 0, function* () {
     const files = req.files;
     const productId = parseInt(req.params.id);
-    const imageUrls = [];
-    if (files && files.length > 0) {
-        for (const file of files) {
-            const uploadCloudinary = yield fileUploader_1.fileUploader.uploadToCloudinary(file);
-            if (uploadCloudinary === null || uploadCloudinary === void 0 ? void 0 : uploadCloudinary.secure_url) {
-                imageUrls.push(uploadCloudinary.secure_url);
-            }
-        }
-        req.body.images = imageUrls;
+    const existingProduct = yield prisma_1.default.product.findUnique({
+        where: {
+            id: productId,
+        },
+        select: {
+            images: true,
+        },
+    });
+    let imagesUpload = [];
+    if (Array.isArray(req === null || req === void 0 ? void 0 : req.files)) {
+        imagesUpload = req.files.map((file) => file === null || file === void 0 ? void 0 : file.path) || [];
     }
-    const productUpdateData = req.body;
+    const updatedImages = Array.isArray(existingProduct === null || existingProduct === void 0 ? void 0 : existingProduct.images)
+        ? [...existingProduct.images, ...imagesUpload]
+        : imagesUpload;
+    const productUpdateData = Object.assign(Object.assign({}, req.body), { images: updatedImages });
     const result = yield prisma_1.default.product.update({
         where: {
             id: productId

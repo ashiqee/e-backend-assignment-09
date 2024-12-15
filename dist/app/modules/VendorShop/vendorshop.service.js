@@ -25,7 +25,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.vendorShopServices = void 0;
 const client_1 = require("@prisma/client");
-const fileUploader_1 = require("../../../helpers/fileUploader");
 const prisma_1 = __importDefault(require("../../../share/prisma"));
 const pick_1 = __importDefault(require("../../../share/pick"));
 const vendorshop_constant_1 = require("./vendorshop.constant");
@@ -42,8 +41,7 @@ const createShop = (req) => __awaiter(void 0, void 0, void 0, function* () {
     });
     let logo = null;
     if (file) {
-        const uploadCloudinary = yield fileUploader_1.fileUploader.uploadToCloudinary(file);
-        logo = uploadCloudinary === null || uploadCloudinary === void 0 ? void 0 : uploadCloudinary.secure_url;
+        logo = file.path;
     }
     const vendorShopData = {
         name: shopData.name,
@@ -71,15 +69,10 @@ const updateVendorShop = (req) => __awaiter(void 0, void 0, void 0, function* ()
     if (isNaN(vendorShopId)) {
         throw new Error("Invalid vendor shop ID");
     }
-    const file = req.file;
-    let logo = null;
-    if (file) {
-        const uploadCloudinary = yield fileUploader_1.fileUploader.uploadToCloudinary(file);
-        logo = (uploadCloudinary === null || uploadCloudinary === void 0 ? void 0 : uploadCloudinary.secure_url) || null;
-    }
     const updateData = Object.assign({}, req.body);
-    if (logo) {
-        updateData.logo = logo;
+    const file = req.file;
+    if (file) {
+        updateData.logo = file.path;
     }
     // updateVendorShop 
     const updateVenshop = yield prisma_1.default.vendorShop.update({

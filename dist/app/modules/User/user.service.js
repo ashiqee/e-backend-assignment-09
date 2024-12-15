@@ -59,7 +59,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.userServices = void 0;
 const bcrypt = __importStar(require("bcrypt"));
 const prisma_1 = __importDefault(require("../../../share/prisma"));
-const fileUploader_1 = require("../../../helpers/fileUploader");
 const user_constant_1 = require("./user.constant");
 const pick_1 = __importDefault(require("../../../share/pick"));
 const paginationHelper_1 = require("../../../helpers/paginationHelper");
@@ -76,8 +75,7 @@ const createUser = (req) => __awaiter(void 0, void 0, void 0, function* () {
     const file = req.file;
     let profilePhoto = null;
     if (file) {
-        const uploadCloudinary = yield fileUploader_1.fileUploader.uploadToCloudinary(file);
-        profilePhoto = uploadCloudinary === null || uploadCloudinary === void 0 ? void 0 : uploadCloudinary.secure_url;
+        profilePhoto = file.path;
     }
     const hashedPassword = yield bcrypt.hash(req.body.password, 12);
     const userData = {
@@ -89,6 +87,7 @@ const createUser = (req) => __awaiter(void 0, void 0, void 0, function* () {
         address: req.body.user.address,
         password: hashedPassword
     };
+    console.log(userData, req.body);
     const result = yield prisma_1.default.user.create({
         data: userData,
         select: {
@@ -212,15 +211,9 @@ const updateUser = (req) => __awaiter(void 0, void 0, void 0, function* () {
         if (!userId) {
             throw new Error("User is Not Found");
         }
-        // Upload profile photo if provided
-        let profilePhoto = null;
-        if (file) {
-            const uploadCloudinary = yield fileUploader_1.fileUploader.uploadToCloudinary(file);
-            profilePhoto = (uploadCloudinary === null || uploadCloudinary === void 0 ? void 0 : uploadCloudinary.secure_url) || null;
-        }
         const updateData = Object.assign({}, req.body);
-        if (profilePhoto) {
-            updateData.profilePhoto = profilePhoto;
+        if (file) {
+            updateData.profilePhoto = file.path;
         }
         // Update the user
         const updatedUser = yield prisma_1.default.user.update({
