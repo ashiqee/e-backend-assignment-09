@@ -44,6 +44,7 @@ const createUser = async (req:Request)=>{
         password: hashedPassword
     }
 
+  console.log(userData,req.body);
   
     
 
