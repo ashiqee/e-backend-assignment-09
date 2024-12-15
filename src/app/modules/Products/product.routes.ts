@@ -5,6 +5,7 @@ import auth from "../../middlewares/auth";
 import { UserRole } from "@prisma/client";
 import { productValidation } from "./product.validation";
 import { prodcutControllers } from "./product.controlers";
+import { multerUpload } from "../../../config/multer.config";
 
 
 
@@ -16,7 +17,7 @@ const router = express.Router();
 
 router.post('/create-product',  
     auth(UserRole.ADMIN,UserRole.VENDOR),
-fileUploader.upload.array('files', 5),
+    multerUpload.array('files',5),
 (req: Request, res: Response, next: NextFunction) => {       
     req.body = productValidation.createProductSchema.parse(JSON.parse(req.body.data))
     return prodcutControllers.createProduct(req, res, next)
@@ -25,7 +26,7 @@ fileUploader.upload.array('files', 5),
 
 router.patch('/update/:id',  
     auth(UserRole.ADMIN,UserRole.VENDOR),
-fileUploader.upload.array('files', 5),
+    multerUpload.array('files',5),
 (req: Request, res: Response, next: NextFunction) => {       
     req.body = productValidation.updateProductSchema.parse(JSON.parse(req.body.data))
     return prodcutControllers.updateProduct(req, res, next)

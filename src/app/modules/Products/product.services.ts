@@ -12,31 +12,22 @@ import { Prisma, VendorShopStatus } from "@prisma/client";
 
 
 const createAProduct = async (req:Request )=>{
-   
-   
-    const files = req.files as IFile[];
-    const {product}= req.body; 
-  
     
-
-    const imageUrls: string[] = []
-    if(files && files.length > 0){
-        for (const file of files){
-            const uploadCloudinary = await fileUploader.uploadToCloudinary(file);
-            if(uploadCloudinary?.secure_url){
-                imageUrls.push(uploadCloudinary.secure_url)
-            }
-
-        }
-     
-    }
+    const {product}= req.body; 
+    
+    
+    let imagesUpload: string[] = [];
+    
+    if (Array.isArray(req?.files)) {
+        imagesUpload = req.files.map((file: any) => file?.path) || [];
+      }
 
     const productData = {
         name:product.name,
         price:product.price,
         description: product.description,
         inventoryCount: product.inventoryCount,
-        images: imageUrls,
+        images: imagesUpload,
         discount: product.discount,
         categoryId:product.categoryId,
         vendorShopId:product.vendorShopId
@@ -63,23 +54,31 @@ const updateAProduct = async (req:Request )=>{
    
     const files = req.files as IFile[];
     const productId = parseInt(req.params.id);
+
+    const existingProduct = await prisma.product.findUnique({
+        where: {
+            id: productId,
+        },
+        select: {
+            images: true, 
+        },
+    });
+
+    let imagesUpload: string[] = [];
     
+    if (Array.isArray(req?.files)) {
+        imagesUpload = req.files.map((file: any) => file?.path) || [];
+      }
 
-    const imageUrls: string[] = []
-    if(files && files.length > 0){
-        for (const file of files){
-            const uploadCloudinary = await fileUploader.uploadToCloudinary(file);
-            if(uploadCloudinary?.secure_url){
-                imageUrls.push(uploadCloudinary.secure_url)
-            }
-
-        }
-        req.body.images = imageUrls
-    }
-
-    const productUpdateData = req.body
+   const updatedImages = Array.isArray(existingProduct?.images)
+    ? [...existingProduct.images, ...imagesUpload]
+    : imagesUpload;
 
     
+    const productUpdateData = {
+        ...req.body,
+        images: updatedImages, 
+    };
   
     
         const result = await prisma.product.update({
