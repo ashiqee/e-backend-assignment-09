@@ -29,10 +29,10 @@ const createShop  = async (req: Request  & {user?: IAuthUser})=>{
     
    
     let logo = null
-    if(file){
-        const uploadCloudinary = await fileUploader.uploadToCloudinary(file);
-        logo = uploadCloudinary?.secure_url
+    if (file) {
+        logo = file.path
     }
+   
 
     const vendorShopData = {
         name: shopData.name,
@@ -68,18 +68,16 @@ if (isNaN(vendorShopId)) {
     throw new Error("Invalid vendor shop ID");
 }
 
+const updateData: Record<string, any> = { ...req.body };
+
 
     const file =req.file as IFile;
-    let logo: string|null = null
-    if(file){
-        const uploadCloudinary = await fileUploader.uploadToCloudinary(file);
-        logo = uploadCloudinary?.secure_url || null
+  
+    if (file) {
+        updateData.logo = file.path;
     }
 
-    const updateData: Record<string, any> = { ...req.body };
-    if (logo) {
-        updateData.logo = logo;
-    }
+  
 
     // updateVendorShop 
     const updateVenshop = await prisma.vendorShop.update({

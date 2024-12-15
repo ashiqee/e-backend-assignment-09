@@ -5,6 +5,7 @@ import { shopValidation } from "./vendorshop.validation";
 import { CreateShopRequest } from "./vedorshop.interface";
 import auth from "../../middlewares/auth";
 import { UserRole } from "@prisma/client";
+import { multerUpload } from "../../../config/multer.config";
 
 
 
@@ -12,7 +13,7 @@ const router = express.Router();
 
 router.post('/create',  
     auth(UserRole.VENDOR),
-    fileUploader.upload.single('file'),
+    multerUpload.single('file'),
     (req: Request, res: Response, next: NextFunction) => {
                
         req.body = shopValidation.createShopSchema.parse(
@@ -25,7 +26,7 @@ router.post('/create',
 
 router.patch('/update/:id',  
     auth(UserRole.ADMIN,UserRole.VENDOR),
-    fileUploader.upload.single('file'),
+    multerUpload.single('file'),
     (req: Request, res: Response, next: NextFunction) => {
         req.body = shopValidation.updateShopSchema.parse(
             JSON.parse(req.body.data)
