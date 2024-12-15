@@ -139,7 +139,6 @@ const cancelOrder = (req) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     const id = parseInt(req.params.id); // Assuming `productIds` is an array of product IDs
     const productIds = [id];
-    console.log(id);
     try {
         // Validate user
         const user = yield prisma_1.default.user.findUniqueOrThrow({
