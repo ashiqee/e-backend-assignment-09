@@ -27,11 +27,10 @@ const createACategory = async (req:Request )=>{
 
     const file =req.file as IFile;
     let image: string|null = null
-    if(file){
-        const uploadCloudinary = await fileUploader.uploadToCloudinary(file);
-        image = uploadCloudinary?.secure_url || null
+    if (file) {
+        image = file.path
     }
-
+   
    
 
     const CategoryData = {
@@ -189,15 +188,14 @@ const deleteCategory = async (req: Request) => {
 
 
        
-        const file = req.file as IFile | undefined;
+        const file = req.file as IFile ;
 
       
 
         // Upload profile photo if provided
         let image: string | null = null;
         if (file) {
-            const uploadCloudinary = await fileUploader.uploadToCloudinary(file);
-            image = uploadCloudinary?.secure_url || null;
+            image = file.path
         }
 
         const updateData: Record<string, any> = { ...req.body };
