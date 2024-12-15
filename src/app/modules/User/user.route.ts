@@ -4,6 +4,7 @@ import { fileUploader } from "../../../helpers/fileUploader";
 import { userValidation } from "./user.validation";
 import auth from "../../middlewares/auth";
 import { UserRole } from "@prisma/client";
+import { multerUpload } from "../../../config/multer.config";
 
 
 
@@ -14,7 +15,7 @@ const router = express.Router();
 
 
 router.post('/register',  
-fileUploader.upload.single('file'),
+multerUpload.single('file'),
 (req: Request, res: Response, next: NextFunction) => {
     req.body = userValidation.createUser.parse(JSON.parse(req.body.data))
     return usersControllers.createUser(req, res, next)
@@ -28,7 +29,7 @@ router.get('/:userId',usersControllers.getAUsers)
 
 router.put("/update/:userId",
 auth(UserRole.ADMIN,UserRole.CUSTOMER,UserRole.VENDOR),
-    fileUploader.upload.single('file'),
+multerUpload.single('file'),
 (req: Request, res: Response, next: NextFunction) => {
     req.body = userValidation.updateUser.parse(JSON.parse(req.body.data))
     return usersControllers.updateAUser(req, res, next)

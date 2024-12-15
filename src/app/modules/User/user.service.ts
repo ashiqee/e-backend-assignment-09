@@ -27,10 +27,11 @@ const createUser = async (req:Request)=>{
     const file = req.file as IFile;
 
     let profilePhoto = null
-    if(file){
-        const uploadCloudinary = await fileUploader.uploadToCloudinary(file);
-        profilePhoto = uploadCloudinary?.secure_url
+    if (file) {
+        profilePhoto = file.path
     }
+   
+
 
     const hashedPassword: string = await bcrypt.hash(req.body.password,12);
 
@@ -205,16 +206,10 @@ const updateUser = async (req: Request) => {
             throw new Error("User is Not Found")
         }
 
-        // Upload profile photo if provided
-        let profilePhoto: string | null = null;
-        if (file) {
-            const uploadCloudinary = await fileUploader.uploadToCloudinary(file);
-            profilePhoto = uploadCloudinary?.secure_url || null;
-        }
-
+       
         const updateData: Record<string, any> = { ...req.body };
-        if (profilePhoto) {
-            updateData.profilePhoto = profilePhoto;
+        if (file) {
+            updateData.profilePhoto = file.path;
         }
 
         // Update the user
