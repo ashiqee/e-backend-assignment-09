@@ -27,14 +27,13 @@ router.get('/my-profile',auth(UserRole.ADMIN,UserRole.CUSTOMER,UserRole.VENDOR),
 
 router.get('/:userId',usersControllers.getAUsers)
 
-router.put("/update/:userId",
+router.put("/update",
 auth(UserRole.ADMIN,UserRole.CUSTOMER,UserRole.VENDOR),
-multerUpload.single('file'),
-(req: Request, res: Response, next: NextFunction) => {
-    req.body = userValidation.updateUser.parse(JSON.parse(req.body.data))
-    return usersControllers.updateAUser(req, res, next)
-}
+ usersControllers.updateAUser
+
 )
+
+
 router.delete('/delete/:userId',
     auth(UserRole.ADMIN),
     usersControllers.deleteAUserFromDB)

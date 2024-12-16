@@ -196,13 +196,21 @@ const getMyProfile =  async(req:Request & {user?: IAuthUser})=>{
 
 
 // update 
-const updateUser = async (req: Request) => {
+const updateUser = async (req: Request & {user?:IAuthUser}) => {
     try {
-        const { userId } = req.params;
+       
         const file = req.file as IFile | undefined;
 
+        console.log(req.body);
+                // Validate user
+    const user = await prisma.user.findUniqueOrThrow({
+        where: { email: req.user?.email },
+        select: { id: true },
+    });
+
+
         // Validate input
-        if (!userId) {
+        if (!user) {
             throw new Error("User is Not Found")
         }
 
@@ -214,7 +222,7 @@ const updateUser = async (req: Request) => {
 
         // Update the user
         const updatedUser = await prisma.user.update({
-            where: { id: userId },
+            where: { id: user.id },
             data: updateData,
         });
 
