@@ -105,41 +105,51 @@ const getAllProducts = async (req:Request)=>{
     const { sortBy, sortOrder, page, limit, skip } = paginationHelper.calculatePagination(options);
     const { searchTerm, ...filterData } = filters;
 
-    const andConditions: Prisma.ProductWhereInput[]=[{ isDeleted: false },];
-
-    if(searchTerm){
-        const searchString = String(searchTerm);
-        andConditions.push({
-            OR: productSearchAbleFields.map(field=>({
-                [field]:{
-                    contains: searchTerm,
-                    mode: 'insensitive'
-                }
-            }))
-        })
-    }
-
-    if (Object.keys(filterData).length > 0) {
-        andConditions.push({
-            AND: Object.keys(filterData).map(key => ({
-                [key]: {
-                    equals: (filterData as any)[key]
-                }
-            }))
-        })
-    };
-
-    const whereConditons: Prisma.ProductWhereInput = andConditions.length > 0 ? { AND: andConditions } : {};
-
    
     
+
+    const andConditions: Prisma.ProductWhereInput[]=[{ isDeleted: false },];
+
+    if (filters.flashSale === 'true') {
+        andConditions.push({ flashSale: true });
+      }
+    
+      // Add searchTerm condition
+      if (searchTerm) {
+        const searchString = String(searchTerm);
+        andConditions.push({
+          OR: productSearchAbleFields.map((field) => ({
+            [field]: {
+              contains: searchString,
+              mode: 'insensitive',
+            },
+          })),
+        });
+      }
+    
+      // Add other filter conditions
+      if (Object.keys(filterData).length > 0) {
+        andConditions.push({
+          AND: Object.keys(filterData).map((key) => ({
+            [key]: {
+              equals: (filterData as any)[key],
+            },
+          })),
+        });
+      }
+    
+      // Final where condition
+      const whereConditons: Prisma.ProductWhereInput =
+        andConditions.length > 0 ? { AND: andConditions } : {};
+    
+   
 
     const allProducts = await prisma.product.findMany({
         where: whereConditons,
         skip,
         take:limit,
-        orderBy: options.sortBy && options.sortOrder ? {
-            [options.sortBy as string]: options.sortOrder
+        orderBy: sortBy && sortOrder ? {
+            [sortBy as string]: sortOrder
         } : {
             createdAt: 'desc'
         },
@@ -172,8 +182,8 @@ const getAllProducts = async (req:Request)=>{
         const total = await prisma.product.count({
             where: whereConditons
         })
-    
-    
+        const flashSaleProduct = allProducts.filter(product => product.flashSale === true);
+
    
 
         return {
@@ -182,7 +192,8 @@ const getAllProducts = async (req:Request)=>{
                 limit,
                 page
             },
-            products: transformedProducts
+            products: transformedProducts,
+            flashSaleProduct
         };
 }
 const getAllVendorProducts = async (req:Request & {user?:IAuthUser} )=>{
@@ -305,6 +316,24 @@ const getAProduct = async (req: Request)=>{
 }
 
 
+const updateFlashSaleStatus = async (req: Request)=>{
+        const productId =parseInt(req.params.id)
+        const status = req.body.status
+    const result = await prisma.product.update({
+        where: {
+            id: productId,
+            isDeleted:false
+        },
+        data:{
+            flashSale: status
+        }
+    })
+
+    return result;
+   
+}
+
+
 // Delete a product 
 
 const deleteAProduct = async (req: Request)=>{
@@ -340,5 +369,6 @@ export const productServices = {
     getAProduct,
     deleteAProduct,
     updateAProduct,
-    getAllVendorProducts
+    getAllVendorProducts,
+    updateFlashSaleStatus
 }

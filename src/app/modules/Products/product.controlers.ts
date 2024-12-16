@@ -36,6 +36,20 @@ const updateProduct = catchAsync( async( req: Request ,res: Response)=>{
             data: result 
         })
     } )
+
+const updateFlashSaleProduct = catchAsync( async( req: Request ,res: Response)=>{
+    
+ 
+    const result =  await productServices.updateFlashSaleStatus(req)
+    
+    
+        sendResponse(res,{
+            success:true,
+            status: httpStatus.OK,
+            message:"Product flashSale status updated succesfully",
+            data: result 
+        })
+    } )
     
 const getAllProductFromDB = catchAsync( async( req: Request ,res: Response)=>{
    
@@ -105,5 +119,6 @@ export const prodcutControllers = {
     getAProductFromDB,
     deleteAProduct,
     updateProduct,
-    getAllVendorProductFromDB
+    getAllVendorProductFromDB,
+    updateFlashSaleProduct
 }

@@ -40,8 +40,12 @@ router.get('/vendor', auth(UserRole.VENDOR) , prodcutControllers.getAllVendorPro
 
 router.get('/:id',prodcutControllers.getAProductFromDB);
 
-router.delete('/delete/:id',prodcutControllers.deleteAProduct);
+router.delete('/delete/:id',auth(UserRole.VENDOR,UserRole.ADMIN),prodcutControllers.deleteAProduct);
 
+router.put('/flashSale/:id',auth(UserRole.VENDOR,UserRole.ADMIN),prodcutControllers.updateFlashSaleProduct);
+
+
+                        
 
 
 export const ProductRoutes = router;
