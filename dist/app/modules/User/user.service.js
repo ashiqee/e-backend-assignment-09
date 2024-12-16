@@ -87,7 +87,7 @@ const createUser = (req) => __awaiter(void 0, void 0, void 0, function* () {
         address: req.body.user.address,
         password: hashedPassword
     };
-    console.log(userData, req.body);
+   
     const result = yield prisma_1.default.user.create({
         data: userData,
         select: {

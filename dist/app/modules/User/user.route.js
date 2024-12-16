@@ -18,10 +18,7 @@ router.post('/register', multer_config_1.multerUpload.single('file'), (req, res,
 router.get('/', (0, auth_1.default)(client_1.UserRole.ADMIN), user_controller_1.usersControllers.getAllUsers);
 router.get('/my-profile', (0, auth_1.default)(client_1.UserRole.ADMIN, client_1.UserRole.CUSTOMER, client_1.UserRole.VENDOR), user_controller_1.usersControllers.getMyProfileFromDb);
 router.get('/:userId', user_controller_1.usersControllers.getAUsers);
-router.put("/update/:userId", (0, auth_1.default)(client_1.UserRole.ADMIN, client_1.UserRole.CUSTOMER, client_1.UserRole.VENDOR), multer_config_1.multerUpload.single('file'), (req, res, next) => {
-    req.body = user_validation_1.userValidation.updateUser.parse(JSON.parse(req.body.data));
-    return user_controller_1.usersControllers.updateAUser(req, res, next);
-});
+router.put("/update", (0, auth_1.default)(client_1.UserRole.ADMIN, client_1.UserRole.CUSTOMER, client_1.UserRole.VENDOR), user_controller_1.usersControllers.updateAUser);
 router.delete('/delete/:userId', (0, auth_1.default)(client_1.UserRole.ADMIN), user_controller_1.usersControllers.deleteAUserFromDB);
 router.delete("/suspend/:userId", (0, auth_1.default)(client_1.UserRole.ADMIN), user_controller_1.usersControllers.suspendAUser);
 exports.UsersRoutes = router;

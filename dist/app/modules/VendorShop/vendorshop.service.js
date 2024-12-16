@@ -167,6 +167,7 @@ const getMyAllShop = (req) => __awaiter(void 0, void 0, void 0, function* () {
         { isDeleted: false },
         { ownerId: isNotExitsUser.id },
     ];
+    console.log(searchTerm);
     if (searchTerm) {
         const searchString = String(searchTerm);
         andConditions.push({
@@ -301,8 +302,12 @@ const getShopByVendorId = (req) => __awaiter(void 0, void 0, void 0, function* (
             isDeleted: false
         },
         include: {
-            products: true,
-            followers: true
+            products: {
+                include: {
+                    OrderItem: true,
+                }
+            },
+            followers: true,
         }
     });
     return result;

@@ -193,7 +193,6 @@ const getMyAllShop = async (req: Request & { user?: IAuthUser }) => {
       { ownerId: isNotExitsUser.id },
     ];
 
-    console.log(searchTerm);
     
   
     if (searchTerm) {

@@ -201,7 +201,7 @@ const updateUser = async (req: Request & {user?:IAuthUser}) => {
        
         const file = req.file as IFile | undefined;
 
-        console.log(req.body);
+       
                 // Validate user
     const user = await prisma.user.findUniqueOrThrow({
         where: { email: req.user?.email },
