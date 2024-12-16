@@ -176,6 +176,7 @@ const getMyAllShop = async (req: Request & { user?: IAuthUser }) => {
     const isNotExitsUser = await prisma.user.findUniqueOrThrow({
       where: {
         email: req.user?.email,
+        role: "VENDOR"
       },
       select: {
         id: true,
@@ -259,7 +260,14 @@ const getMyAllShop = async (req: Request & { user?: IAuthUser }) => {
        
         products: {
           include: {
-            category: true, // Include category details for mapping
+            category: true,
+            OrderItem: {
+              include: {
+                product:true,
+                order:true
+              },
+            }
+            
           },
         },
         followers: true,
@@ -301,6 +309,7 @@ const getMyAllShop = async (req: Request & { user?: IAuthUser }) => {
       },
       shops: transformedShops,
       products: productsWithCategoryName,
+      orders: allShops.flatMap((shop) => shop.products.flatMap((product) => product.OrderItem)),
       
     };
   };
