@@ -44,11 +44,14 @@ router.delete('/blacklist/:shopId',auth(UserRole.ADMIN,),shopControllers.blackli
 
 
 router.get('/',shopControllers.getAllShopFromDB);
+
 router.get('/vendor-shops',
     auth(UserRole.VENDOR),
     shopControllers.getAllMyShopFromDB);
 
 router.get('/:id',shopControllers.getShopByVendorIdFromDB);
+
+router.get('/orders/:id',auth(UserRole.VENDOR),shopControllers.getShopByVendorIdFromDB);
 
 
 

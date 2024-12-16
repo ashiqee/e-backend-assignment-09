@@ -153,6 +153,7 @@ const getMyAllShop = (req) => __awaiter(void 0, void 0, void 0, function* () {
     const isNotExitsUser = yield prisma_1.default.user.findUniqueOrThrow({
         where: {
             email: (_a = req.user) === null || _a === void 0 ? void 0 : _a.email,
+            role: "VENDOR"
         },
         select: {
             id: true,
@@ -225,7 +226,13 @@ const getMyAllShop = (req) => __awaiter(void 0, void 0, void 0, function* () {
         include: {
             products: {
                 include: {
-                    category: true, // Include category details for mapping
+                    category: true,
+                    OrderItem: {
+                        include: {
+                            product: true,
+                            order: true
+                        },
+                    }
                 },
             },
             followers: true,
@@ -256,6 +263,7 @@ const getMyAllShop = (req) => __awaiter(void 0, void 0, void 0, function* () {
         },
         shops: transformedShops,
         products: productsWithCategoryName,
+        orders: allShops.flatMap((shop) => shop.products.flatMap((product) => product.OrderItem)),
     };
 });
 const deleteVendorShop = (req) => __awaiter(void 0, void 0, void 0, function* () {

@@ -160,9 +160,34 @@ const cancelOrder = (req) => __awaiter(void 0, void 0, void 0, function* () {
         throw new Error('Failed to delete cart items: ' + error);
     }
 });
+const updateOrderStatusChange = (req) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    const id = parseInt(req.params.id);
+    const status = req.body.status;
+    try {
+        // Validate user
+        const user = yield prisma_1.default.user.findUniqueOrThrow({
+            where: { email: (_a = req.user) === null || _a === void 0 ? void 0 : _a.email },
+            select: { id: true },
+        });
+        const result = yield prisma_1.default.orderItem.update({
+            where: {
+                id: id
+            },
+            data: {
+                orderStatus: status
+            }
+        });
+        return result;
+    }
+    catch (error) {
+        throw new Error('Failed to delete cart items: ' + error);
+    }
+});
 exports.OrdersServices = {
     createOrderInDB,
     getOrderAllForAdmin,
     cancelOrder,
     getCustomerOrderHistory,
+    updateOrderStatusChange,
 };

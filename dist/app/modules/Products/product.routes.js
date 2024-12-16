@@ -22,5 +22,6 @@ router.patch('/update/:id', (0, auth_1.default)(client_1.UserRole.ADMIN, client_
 router.get('/', product_controlers_1.prodcutControllers.getAllProductFromDB);
 router.get('/vendor', (0, auth_1.default)(client_1.UserRole.VENDOR), product_controlers_1.prodcutControllers.getAllVendorProductFromDB);
 router.get('/:id', product_controlers_1.prodcutControllers.getAProductFromDB);
-router.delete('/delete/:id', product_controlers_1.prodcutControllers.deleteAProduct);
+router.delete('/delete/:id', (0, auth_1.default)(client_1.UserRole.VENDOR, client_1.UserRole.ADMIN), product_controlers_1.prodcutControllers.deleteAProduct);
+router.put('/flashSale/:id', (0, auth_1.default)(client_1.UserRole.VENDOR, client_1.UserRole.ADMIN), product_controlers_1.prodcutControllers.updateFlashSaleProduct);
 exports.ProductRoutes = router;

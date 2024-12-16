@@ -6,7 +6,8 @@ exports.productSearchAbleFields = [
     'description',
 ]; // only for search term
 exports.productFilterableFields = [
-    'searchTerm'
+    'searchTerm',
+    'flashSale'
 ]; // for all filtering 
 exports.productFilterableOptions = [
     'limit',

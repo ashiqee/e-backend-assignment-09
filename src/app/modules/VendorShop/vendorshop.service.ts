@@ -192,6 +192,9 @@ const getMyAllShop = async (req: Request & { user?: IAuthUser }) => {
       { isDeleted: false },
       { ownerId: isNotExitsUser.id },
     ];
+
+    console.log(searchTerm);
+    
   
     if (searchTerm) {
         const searchString = String(searchTerm);
@@ -362,8 +365,15 @@ const getShopByVendorId = async (req: Request) =>{
           isDeleted : false
         },
         include: { 
-            products:true,
-            followers:true
+            products:
+            {
+                include:{
+                    OrderItem:true,
+                    
+                }
+            },
+            followers:true,
+            
             
         }
     })

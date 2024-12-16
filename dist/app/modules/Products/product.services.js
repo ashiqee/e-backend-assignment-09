@@ -88,34 +88,39 @@ const getAllProducts = (req) => __awaiter(void 0, void 0, void 0, function* () {
     const { sortBy, sortOrder, page, limit, skip } = paginationHelper_1.paginationHelper.calculatePagination(options);
     const { searchTerm } = filters, filterData = __rest(filters, ["searchTerm"]);
     const andConditions = [{ isDeleted: false },];
+    if (filters.flashSale === 'true') {
+        andConditions.push({ flashSale: true });
+    }
+    // Add searchTerm condition
     if (searchTerm) {
         const searchString = String(searchTerm);
         andConditions.push({
-            OR: product_constant_1.productSearchAbleFields.map(field => ({
+            OR: product_constant_1.productSearchAbleFields.map((field) => ({
                 [field]: {
-                    contains: searchTerm,
-                    mode: 'insensitive'
-                }
-            }))
+                    contains: searchString,
+                    mode: 'insensitive',
+                },
+            })),
         });
     }
+    // Add other filter conditions
     if (Object.keys(filterData).length > 0) {
         andConditions.push({
-            AND: Object.keys(filterData).map(key => ({
+            AND: Object.keys(filterData).map((key) => ({
                 [key]: {
-                    equals: filterData[key]
-                }
-            }))
+                    equals: filterData[key],
+                },
+            })),
         });
     }
-    ;
+    // Final where condition
     const whereConditons = andConditions.length > 0 ? { AND: andConditions } : {};
     const allProducts = yield prisma_1.default.product.findMany({
         where: whereConditons,
         skip,
         take: limit,
-        orderBy: options.sortBy && options.sortOrder ? {
-            [options.sortBy]: options.sortOrder
+        orderBy: sortBy && sortOrder ? {
+            [sortBy]: sortOrder
         } : {
             createdAt: 'desc'
         },
@@ -144,13 +149,15 @@ const getAllProducts = (req) => __awaiter(void 0, void 0, void 0, function* () {
     const total = yield prisma_1.default.product.count({
         where: whereConditons
     });
+    const flashSaleProduct = allProducts.filter(product => product.flashSale === true);
     return {
         paginateData: {
             total,
             limit,
             page
         },
-        products: transformedProducts
+        products: transformedProducts,
+        flashSaleProduct
     };
 });
 const getAllVendorProducts = (req) => __awaiter(void 0, void 0, void 0, function* () {
@@ -218,6 +225,7 @@ const getAllVendorProducts = (req) => __awaiter(void 0, void 0, void 0, function
         discount: product.discount,
         category: product.category,
         categoryId: product.categoryId,
+        salesQty: product.salesQty,
         vendorShopId: product.vendorShopId,
         flashSale: product.flashSale,
         description: product.description,
@@ -242,6 +250,20 @@ const getAProduct = (req) => __awaiter(void 0, void 0, void 0, function* () {
         where: {
             id: productId,
             isDeleted: false
+        }
+    });
+    return result;
+});
+const updateFlashSaleStatus = (req) => __awaiter(void 0, void 0, void 0, function* () {
+    const productId = parseInt(req.params.id);
+    const status = req.body.status;
+    const result = yield prisma_1.default.product.update({
+        where: {
+            id: productId,
+            isDeleted: false
+        },
+        data: {
+            flashSale: status
         }
     });
     return result;
@@ -275,5 +297,6 @@ exports.productServices = {
     getAProduct,
     deleteAProduct,
     updateAProduct,
-    getAllVendorProducts
+    getAllVendorProducts,
+    updateFlashSaleStatus
 };

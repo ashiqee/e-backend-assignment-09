@@ -35,6 +35,15 @@ const updateProduct = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, 
         data: result
     });
 }));
+const updateFlashSaleProduct = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield product_services_1.productServices.updateFlashSaleStatus(req);
+    (0, sendResponse_1.default)(res, {
+        success: true,
+        status: http_status_1.default.OK,
+        message: "Product flashSale status updated succesfully",
+        data: result
+    });
+}));
 const getAllProductFromDB = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield product_services_1.productServices.getAllProducts(req);
     (0, sendResponse_1.default)(res, {
@@ -77,5 +86,6 @@ exports.prodcutControllers = {
     getAProductFromDB,
     deleteAProduct,
     updateProduct,
-    getAllVendorProductFromDB
+    getAllVendorProductFromDB,
+    updateFlashSaleProduct
 };

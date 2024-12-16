@@ -22,4 +22,5 @@ router.post('/create', (0, auth_1.default)(client_1.UserRole.CUSTOMER), upload.n
     }
 });
 router.get('/getUserOrders', (0, auth_1.default)(client_1.UserRole.CUSTOMER), orders_controlers_1.ordersControllers.getCustomerOrders);
+router.put('/statusChange/:id', (0, auth_1.default)(client_1.UserRole.VENDOR), orders_controlers_1.ordersControllers.orderItemStatusChange);
 exports.OrdersRoutes = router;
