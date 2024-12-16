@@ -76,12 +76,26 @@ const cancelOrder = catchAsync( async( req: Request ,res: Response)=>{
         })
     } )
 
+const orderItemStatusChange = catchAsync( async( req: Request ,res: Response)=>{
+    
+    const result =  await OrdersServices.updateOrderStatusChange(req)
+    
+    
+        sendResponse(res,{
+            success:true,
+            status: httpStatus.OK,
+            message:"Order status change succesfully",
+            data: result 
+        })
+    } )
+
 
 
 export const ordersControllers = {
     createOrder,
     getOrdersAllItems,
     cancelOrder,
-    getCustomerOrders
+    getCustomerOrders,
+    orderItemStatusChange
   
 }

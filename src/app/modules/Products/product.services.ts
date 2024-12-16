@@ -265,6 +265,7 @@ const getAllVendorProducts = async (req:Request & {user?:IAuthUser} )=>{
         discount: product.discount,
         category: product.category,
         categoryId: product.categoryId,
+        salesQty: product.salesQty,
         vendorShopId: product.vendorShopId,
         flashSale: product.flashSale,
         description: product.description,

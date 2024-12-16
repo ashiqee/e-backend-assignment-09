@@ -33,6 +33,7 @@ router.post(
 
 
 router.get('/getUserOrders',auth(UserRole.CUSTOMER),ordersControllers.getCustomerOrders)
+router.put('/statusChange/:id',auth(UserRole.VENDOR),ordersControllers.orderItemStatusChange)
 
 
 export const OrdersRoutes = router;

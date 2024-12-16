@@ -198,10 +198,44 @@ const productIds = [id]
     }
   };
   
+const updateOrderStatusChange = async (req: Request& {user?:IAuthUser}) => {
+
+    const id = parseInt(req.params.id);  
+   const status = req.body.status
+
+
+
+
+
+    try {
+
+          // Validate user
+    const user = await prisma.user.findUniqueOrThrow({
+        where: { email: req.user?.email },
+        select: { id: true },
+    });
+
+
+const result = await prisma.orderItem.update({
+  where:{
+    id:id
+  },
+  data:{
+    orderStatus: status
+  }
+})
+  
+      return result;
+    } catch (error) {
+      throw new Error('Failed to delete cart items: ' + error);
+    }
+  };
+  
 
 export const OrdersServices = {
     createOrderInDB,
     getOrderAllForAdmin,
     cancelOrder,
     getCustomerOrderHistory,
+    updateOrderStatusChange,
 }
