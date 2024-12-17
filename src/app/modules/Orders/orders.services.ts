@@ -7,12 +7,13 @@ import { IAuthUser } from "../../interfaces/common";
 import pick from "../../../share/pick";
 import { paginationHelper } from "../../../helpers/paginationHelper";
 import { OrderStatus, Prisma, VendorShopStatus } from "@prisma/client";
+import { initiatePayment } from "../Payments/payment.utils";
 
 
 
 const createOrderInDB = async (req: Request & { user?: IAuthUser }) => {
     const { order } = req.body; 
-    const transactionId = `txn-${Date.now()}`;
+    
 
 
     // Validate user
@@ -36,7 +37,6 @@ const createOrderInDB = async (req: Request & { user?: IAuthUser }) => {
               mobile: order.mobile,
               address: order.address,
               paymentMethod:order.paymentMethod,
-              transactionId: transactionId,
               orderItems: {
                   create: cartItems.map((item: { productId: number; quantity: number; price: number }) => ({
                       productId: item.productId,
@@ -75,6 +75,101 @@ const createOrderInDB = async (req: Request & { user?: IAuthUser }) => {
       return createdOrder;
   });
 };
+
+const createPaymentOrderInDB = async (req: Request & { user?: IAuthUser }) => {
+  const { order } = req.body;
+  const transactionId = `txn-${Date.now()}`;
+ 
+
+  // Validate user
+  const user = await prisma.user.findUniqueOrThrow({
+    where: { email: req.user?.email },
+    select: {
+      id: true,
+      email: true,
+      fullName: true,
+      address: true,
+      contactNumber: true,
+    },
+  });
+
+  if (!order.cartItems || order.cartItems.length === 0) {
+    throw new Error("Cart is empty. Cannot create an order.");
+  }
+
+  const { cartItems, totalPrice } = order;
+
+
+  const paymentData = {
+    transactionId,
+    totalPrice,
+    customerName: user.fullName,
+    customerEmail: user.email,
+    customerPhone: user.contactNumber,
+    customerAddress: user.address,
+  };
+
+  
+
+ 
+  // Step 2: Begin database transaction after payment success
+  return await prisma.$transaction(async (tx) => {
+    // Create the order with "Paid" status
+    const createdOrder = await tx.order.create({
+      data: {
+        userId: user.id,
+        totalPrice,
+        fullName: order.fullName,
+        mobile: order.mobile,
+        address: order.address,
+        transactionId: transactionId,
+        paymentMethod: order.paymentMethod,
+        orderItems: {
+          create: cartItems.map(
+            (item: { productId: number; quantity: number; price: number }) => ({
+              productId: item.productId,
+              quantity: item.quantity,
+              price: item.price,
+            })
+          ),
+        },
+      },
+      include: { orderItems: true },
+    });
+   
+    
+
+    // Update inventory and sales quantity
+    for (const item of cartItems) {
+      await tx.product.update({
+        where: { id: item.productId },
+        data: {
+          inventoryCount: { decrement: item.quantity },
+          salesQty: { increment: item.quantity },
+        },
+      });
+    }
+
+    // Delete cart items for the user
+    await tx.cartItem.deleteMany({
+      where: {
+        userId: user.id,
+        productId: { in: cartItems.map((item: { productId: number }) => item.productId) },
+      },
+    });
+
+
+ // Step 
+  const paymentSession = await initiatePayment(paymentData);
+
+
+   
+    
+
+    return paymentSession;
+  });
+};
+
 
 const getOrderAllForAdmin = async (req: Request & { user?: IAuthUser })=>{
 
@@ -239,4 +334,5 @@ export const OrdersServices = {
     cancelOrder,
     getCustomerOrderHistory,
     updateOrderStatusChange,
+    createPaymentOrderInDB
 }

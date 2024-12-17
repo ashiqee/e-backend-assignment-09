@@ -19,6 +19,8 @@ const confirmationService = async (transactionId: string) => {
       data: { paymentStatus: 'PAID' },
     });
 
+    
+
     if (result.count > 0) {
      
       const updatedOrder = await prisma.order.findFirst({

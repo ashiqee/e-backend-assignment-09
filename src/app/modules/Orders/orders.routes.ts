@@ -31,6 +31,23 @@ router.post(
     }
   );
 
+router.post(
+    '/createPayOrder',
+    auth(UserRole.CUSTOMER),
+    upload.none(), 
+    (req: Request, res: Response, next: NextFunction) => {
+      try {
+       
+        req.body = ordersValidation.createOrderSchema.parse(
+          JSON.parse(req.body.data)
+        );
+        return ordersControllers.createPayOrder(req, res, next);
+      } catch (error:any) {
+        res.status(400).json({ error: error.message });
+      }
+    }
+  );
+
 
 router.get('/getUserOrders',auth(UserRole.CUSTOMER),ordersControllers.getCustomerOrders)
 router.put('/statusChange/:id',auth(UserRole.VENDOR),ordersControllers.orderItemStatusChange)

@@ -47,7 +47,7 @@ const allRoutes = [
         route: CouponRoutes,
     },
     {
-        path:"/payments",
+        path:"/payment",
         route: PaymentRoutes,
     },
     

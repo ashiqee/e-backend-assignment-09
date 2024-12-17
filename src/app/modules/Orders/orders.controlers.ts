@@ -20,6 +20,19 @@ const createOrder = catchAsync( async( req: Request ,res: Response)=>{
         })
     } )
 
+const createPayOrder = catchAsync( async( req: Request ,res: Response)=>{
+    
+    const result =  await OrdersServices.createPaymentOrderInDB(req)
+    
+    
+        sendResponse(res,{
+            success:true,
+            status: httpStatus.OK,
+            message:"Create a order succesfully",
+            data: result 
+        })
+    } )
+
 // const getOrdersVendorShops = catchAsync( async( req: Request ,res: Response)=>{
     
 //     const result =  await OrdersServices.getCartItems(req)
@@ -96,6 +109,7 @@ export const ordersControllers = {
     getOrdersAllItems,
     cancelOrder,
     getCustomerOrders,
-    orderItemStatusChange
+    orderItemStatusChange,
+    createPayOrder
   
 }
