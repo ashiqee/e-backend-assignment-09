@@ -1,9 +1,9 @@
 import { Request } from "express";
-import { fileUploader } from "../../../helpers/fileUploader";
+
 import prisma from "../../../share/prisma";
 import { IFile } from "../../interfaces/file";
 import { IAuthUser } from "../../interfaces/common";
-import { error, log } from "console";
+
 import pick from "../../../share/pick";
 import { paginationHelper } from "../../../helpers/paginationHelper";
 import { OrderStatus, Prisma, VendorShopStatus } from "@prisma/client";
@@ -12,7 +12,7 @@ import { OrderStatus, Prisma, VendorShopStatus } from "@prisma/client";
 
 const createOrderInDB = async (req: Request & { user?: IAuthUser }) => {
     const { order } = req.body; 
-
+    const transactionId = `txn-${Date.now()}`;
 
 
     // Validate user
@@ -36,6 +36,7 @@ const createOrderInDB = async (req: Request & { user?: IAuthUser }) => {
               mobile: order.mobile,
               address: order.address,
               paymentMethod:order.paymentMethod,
+              transactionId: transactionId,
               orderItems: {
                   create: cartItems.map((item: { productId: number; quantity: number; price: number }) => ({
                       productId: item.productId,

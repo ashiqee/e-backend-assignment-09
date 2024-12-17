@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+    
+
+        .header {
+            background-color: #000;
+            color: #ffffff;
+            padding: 20px;
+            text-align: center;
+        }
+
+    
+
+        .footer {
+            background-color: #f1f1f1;
+            color: #555555;
+            text-align: center;
+            padding: 10px;
+            font-size: 14px;
+        }
+
+    
+
+    </style>
+     <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body>
+    <div class="bg-gray-100 flex flex-col text-white bg-gradient-to-b from-slate-700/85 to-slate-800/80 items-center justify-center min-h-screen">
+        <div class=" text-sm text-center  pb-20 ">
+            <h1 class="text-5xl font-bold">Trekz</h1>
+            <p>Travels Tips and guides</p>
+
+        </div>
+        <div class="content">
+          
+    <div class="bg-slate-700/45 shadow-lg rounded-lg p-8 max-w-md text-center">
+      <div class="flex items-center justify-center w-16 h-16 mx-auto bg-green-100 rounded-full">
+        <svg class="w-12 h-12 text-green-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path>
+        </svg>
+      </div>
+      <h2 class="text-2xl font-bold text-gray-50 mt-4">Payment Successful</h2>
+      <p class="text-gray-100 mt-2">Thank you for your payment. Your transaction was completed successfully.</p>
+      
+      <div class="mt-6">
+        <a href="https://trekz.vercel.app/" class="inline-block bg-blue-500 hover:bg-blue-600 text-white font-semibold px-6 py-2 rounded-md transition duration-200">
+          Go to Dashboard
+        </a>
+      </div>
+  
+      <div class="mt-4">
+        <p class="text-sm text-gray-100">Transaction ID: <span class="font-medium text-gray-300">{{message}}</span></p>
+      </div>
+    </div>
+        <div class="text-center mt-20">
+            <p>&copy; 2024 Trekz & Trips. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+
+</html>

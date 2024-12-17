@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "@prisma/client": "^6.0.0",
+    "axios": "^1.7.9",
     "bcrypt": "^5.1.1",
     "cloudinary": "^1.41.3",
     "cookie-parser": "^1.4.7",
