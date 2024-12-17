@@ -88,6 +88,18 @@ const getShopByVendorIdFromDB = catchAsync(async (req: Request, res: Response) =
     })
 });
 
+const getShopByIdAllProductFromDB = catchAsync(async (req: Request, res: Response) => {
+
+    
+    const result = await vendorShopServices.getShopById(req);
+    sendResponse(res, {
+        status: httpStatus.OK,
+        success: true,
+        message: "Vendor Shop retrived successfuly!",
+        data: result
+    })
+});
+
 
 const blacklistedShopInDB = catchAsync(async (req: Request, res: Response) => {
 
@@ -113,5 +125,6 @@ const blacklistedShopInDB = catchAsync(async (req: Request, res: Response) => {
         blacklistedShopInDB,
         deleteShopFromDB,
         getAllMyShopFromDB,
+        getShopByIdAllProductFromDB
         
     }

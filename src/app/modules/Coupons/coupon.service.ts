@@ -58,7 +58,6 @@ const getAllCoupons = async (req: Request) => {
 
   
   const result = await prisma.coupon.findMany({
-    where: prismaFilter,
     skip,
     take: limit,
     orderBy: { createdAt: "desc" },
@@ -67,7 +66,7 @@ const getAllCoupons = async (req: Request) => {
   const total = await prisma.coupon.count({
     where: prismaFilter,
   });
-
+  
   return {
     meta: { page, limit, total },
     data: result,

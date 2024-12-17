@@ -50,6 +50,7 @@ router.get('/vendor-shops',
     shopControllers.getAllMyShopFromDB);
 
 router.get('/:id',shopControllers.getShopByVendorIdFromDB);
+router.get('/products/:id',shopControllers.getShopByIdAllProductFromDB);
 
 router.get('/orders/:id',auth(UserRole.VENDOR),shopControllers.getShopByVendorIdFromDB);
 

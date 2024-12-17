@@ -2,6 +2,7 @@ import express, { Request, Response, NextFunction } from "express";
 import auth from "../../middlewares/auth";
 import { UserRole } from "@prisma/client";
 import multer from "multer";
+import { couponController } from "./coupon.controler";
 
 const upload = multer(); // Initialize Multer middleware
 const router = express.Router();
@@ -10,14 +11,7 @@ const router = express.Router();
 router.post(
   "/create",
   auth(UserRole.VENDOR),
-  (req: Request, res: Response, next: NextFunction) => {
-    try {
-     
-      res.status(201).json({ message: "Coupon created successfully!" });
-    } catch (error) {
-      next(error);
-    }
-  }
+  couponController.createCoupon
 );
 
 

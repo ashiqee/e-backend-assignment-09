@@ -380,6 +380,26 @@ const getShopByVendorId = async (req: Request) =>{
     return result
 }
 
+const getShopById= async (req: Request) =>{
+
+    const shopId = parseInt(req.params.id)
+        const result = await prisma.vendorShop.findUniqueOrThrow({
+        where: {
+          id: shopId,
+          status: VendorShopStatus.ACTIVE,
+          isDeleted : false
+        },
+        include: { 
+            products:true,
+            followers:true,
+            
+            
+        }
+    })
+
+    return result
+}
+
 
 
 const blacklistShop = async (req:Request)=>{
@@ -415,5 +435,6 @@ export const vendorShopServices = {
     getShopByVendorId,
     deleteVendorShop,
     blacklistShop,
-    getMyAllShop
+    getMyAllShop,
+    getShopById
 }

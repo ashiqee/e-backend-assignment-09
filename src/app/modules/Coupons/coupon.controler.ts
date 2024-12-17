@@ -24,7 +24,7 @@ const getAllCoupons = catchAsync(async (req: Request, res: Response) => {
     success: true,
     status: httpStatus.OK,
     message: "Coupons retrieved successfully",
-    data: result.data,
+    data: result,
    
   });
 });
