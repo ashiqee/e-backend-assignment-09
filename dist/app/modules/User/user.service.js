@@ -87,7 +87,6 @@ const createUser = (req) => __awaiter(void 0, void 0, void 0, function* () {
         address: req.body.user.address,
         password: hashedPassword
     };
-   
     const result = yield prisma_1.default.user.create({
         data: userData,
         select: {
@@ -204,11 +203,16 @@ const getMyProfile = (req) => __awaiter(void 0, void 0, void 0, function* () {
 // update user role 
 // update 
 const updateUser = (req) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     try {
-        const { userId } = req.params;
         const file = req.file;
+        // Validate user
+        const user = yield prisma_1.default.user.findUniqueOrThrow({
+            where: { email: (_a = req.user) === null || _a === void 0 ? void 0 : _a.email },
+            select: { id: true },
+        });
         // Validate input
-        if (!userId) {
+        if (!user) {
             throw new Error("User is Not Found");
         }
         const updateData = Object.assign({}, req.body);
@@ -217,7 +221,7 @@ const updateUser = (req) => __awaiter(void 0, void 0, void 0, function* () {
         }
         // Update the user
         const updatedUser = yield prisma_1.default.user.update({
-            where: { id: userId },
+            where: { id: user.id },
             data: updateData,
         });
         return updatedUser;

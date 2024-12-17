@@ -128,7 +128,7 @@ const changePassword = (user, payload) => __awaiter(void 0, void 0, void 0, func
     };
 });
 const forgotPassword = (payload) => __awaiter(void 0, void 0, void 0, function* () {
-   
+    console.log(payload);
     const userData = yield prisma_1.default.user.findUniqueOrThrow({
         where: {
             email: payload.email,

@@ -2,7 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ordersFilterableOptions = exports.ordersFilterableFields = exports.ordersSearchAbleFields = void 0;
 exports.ordersSearchAbleFields = [
-    'name',
+    'id',
+    "name",
     'description',
 ]; // only for search term
 exports.ordersFilterableFields = [

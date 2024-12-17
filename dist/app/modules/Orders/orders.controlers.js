@@ -26,6 +26,15 @@ const createOrder = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, vo
         data: result
     });
 }));
+const createPayOrder = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield orders_services_1.OrdersServices.createPaymentOrderInDB(req);
+    (0, sendResponse_1.default)(res, {
+        success: true,
+        status: http_status_1.default.OK,
+        message: "Create a order succesfully",
+        data: result
+    });
+}));
 // const getOrdersVendorShops = catchAsync( async( req: Request ,res: Response)=>{
 //     const result =  await OrdersServices.getCartItems(req)
 //         sendResponse(res,{
@@ -47,6 +56,15 @@ const getOrdersAllItems = (0, catchAsync_1.default)((req, res) => __awaiter(void
 }));
 const getCustomerOrders = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield orders_services_1.OrdersServices.getCustomerOrderHistory(req);
+    (0, sendResponse_1.default)(res, {
+        success: true,
+        status: http_status_1.default.OK,
+        message: "All Customer Orders retrive succesfully",
+        data: result
+    });
+}));
+const getCustomerOrdersForAdmin = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield orders_services_1.OrdersServices.getCustomerAllOrderHistoryForAdmin(req);
     (0, sendResponse_1.default)(res, {
         success: true,
         status: http_status_1.default.OK,
@@ -77,5 +95,7 @@ exports.ordersControllers = {
     getOrdersAllItems,
     cancelOrder,
     getCustomerOrders,
-    orderItemStatusChange
+    orderItemStatusChange,
+    createPayOrder,
+    getCustomerOrdersForAdmin
 };

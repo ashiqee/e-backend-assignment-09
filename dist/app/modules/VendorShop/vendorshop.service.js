@@ -167,7 +167,6 @@ const getMyAllShop = (req) => __awaiter(void 0, void 0, void 0, function* () {
         { isDeleted: false },
         { ownerId: isNotExitsUser.id },
     ];
-    console.log(searchTerm);
     if (searchTerm) {
         const searchString = String(searchTerm);
         andConditions.push({

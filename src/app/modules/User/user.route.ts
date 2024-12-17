@@ -23,6 +23,8 @@ multerUpload.single('file'),
  )
 
 router.get('/',auth(UserRole.ADMIN),usersControllers.getAllUsers)
+
+
 router.get('/my-profile',auth(UserRole.ADMIN,UserRole.CUSTOMER,UserRole.VENDOR),usersControllers.getMyProfileFromDb)
 
 router.get('/:userId',usersControllers.getAUsers)

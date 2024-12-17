@@ -21,6 +21,16 @@ router.post('/create', (0, auth_1.default)(client_1.UserRole.CUSTOMER), upload.n
         res.status(400).json({ error: error.message });
     }
 });
+router.post('/createPayOrder', (0, auth_1.default)(client_1.UserRole.CUSTOMER), upload.none(), (req, res, next) => {
+    try {
+        req.body = orders_validation_1.ordersValidation.createOrderSchema.parse(JSON.parse(req.body.data));
+        return orders_controlers_1.ordersControllers.createPayOrder(req, res, next);
+    }
+    catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
 router.get('/getUserOrders', (0, auth_1.default)(client_1.UserRole.CUSTOMER), orders_controlers_1.ordersControllers.getCustomerOrders);
+router.get('/getAllOrders', (0, auth_1.default)(client_1.UserRole.ADMIN), orders_controlers_1.ordersControllers.getCustomerOrdersForAdmin);
 router.put('/statusChange/:id', (0, auth_1.default)(client_1.UserRole.VENDOR), orders_controlers_1.ordersControllers.orderItemStatusChange);
 exports.OrdersRoutes = router;
