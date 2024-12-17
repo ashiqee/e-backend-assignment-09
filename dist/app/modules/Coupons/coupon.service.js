@@ -62,7 +62,6 @@ const getAllCoupons = (req) => __awaiter(void 0, void 0, void 0, function* () {
         prismaFilter.isActive = filterData.isActive === "true";
     }
     const result = yield prisma_1.default.coupon.findMany({
-        where: prismaFilter,
         skip,
         take: limit,
         orderBy: { createdAt: "desc" },

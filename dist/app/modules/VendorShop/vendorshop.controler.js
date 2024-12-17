@@ -72,6 +72,15 @@ const getShopByVendorIdFromDB = (0, catchAsync_1.default)((req, res) => __awaite
         data: result
     });
 }));
+const getShopByIdAllProductFromDB = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield vendorshop_service_1.vendorShopServices.getShopById(req);
+    (0, sendResponse_1.default)(res, {
+        status: http_status_1.default.OK,
+        success: true,
+        message: "Vendor Shop retrived successfuly!",
+        data: result
+    });
+}));
 const blacklistedShopInDB = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield vendorshop_service_1.vendorShopServices.blacklistShop(req);
     (0, sendResponse_1.default)(res, {
@@ -89,4 +98,5 @@ exports.shopControllers = {
     blacklistedShopInDB,
     deleteShopFromDB,
     getAllMyShopFromDB,
+    getShopByIdAllProductFromDB
 };

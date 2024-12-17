@@ -311,6 +311,21 @@ const getShopByVendorId = (req) => __awaiter(void 0, void 0, void 0, function* (
     });
     return result;
 });
+const getShopById = (req) => __awaiter(void 0, void 0, void 0, function* () {
+    const shopId = parseInt(req.params.id);
+    const result = yield prisma_1.default.vendorShop.findUniqueOrThrow({
+        where: {
+            id: shopId,
+            status: client_1.VendorShopStatus.ACTIVE,
+            isDeleted: false
+        },
+        include: {
+            products: true,
+            followers: true,
+        }
+    });
+    return result;
+});
 const blacklistShop = (req) => __awaiter(void 0, void 0, void 0, function* () {
     const shopId = parseInt(req.params.shopId);
     const existVendorShop = yield prisma_1.default.vendorShop.findUniqueOrThrow({
@@ -339,5 +354,6 @@ exports.vendorShopServices = {
     getShopByVendorId,
     deleteVendorShop,
     blacklistShop,
-    getMyAllShop
+    getMyAllShop,
+    getShopById
 };

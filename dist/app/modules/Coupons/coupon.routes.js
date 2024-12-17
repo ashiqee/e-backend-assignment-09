@@ -8,16 +8,10 @@ const express_1 = __importDefault(require("express"));
 const auth_1 = __importDefault(require("../../middlewares/auth"));
 const client_1 = require("@prisma/client");
 const multer_1 = __importDefault(require("multer"));
+const coupon_controler_1 = require("./coupon.controler");
 const upload = (0, multer_1.default)(); // Initialize Multer middleware
 const router = express_1.default.Router();
-router.post("/create", (0, auth_1.default)(client_1.UserRole.VENDOR), (req, res, next) => {
-    try {
-        res.status(201).json({ message: "Coupon created successfully!" });
-    }
-    catch (error) {
-        next(error);
-    }
-});
+router.post("/create", (0, auth_1.default)(client_1.UserRole.VENDOR), coupon_controler_1.couponController.createCoupon);
 router.get("/:id", (0, auth_1.default)(client_1.UserRole.VENDOR, client_1.UserRole.ADMIN), (req, res, next) => {
     try {
         const { id } = req.params;

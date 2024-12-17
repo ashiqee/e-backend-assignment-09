@@ -24,5 +24,6 @@ router.delete('/blacklist/:shopId', (0, auth_1.default)(client_1.UserRole.ADMIN)
 router.get('/', vendorshop_controler_1.shopControllers.getAllShopFromDB);
 router.get('/vendor-shops', (0, auth_1.default)(client_1.UserRole.VENDOR), vendorshop_controler_1.shopControllers.getAllMyShopFromDB);
 router.get('/:id', vendorshop_controler_1.shopControllers.getShopByVendorIdFromDB);
+router.get('/products/:id', vendorshop_controler_1.shopControllers.getShopByIdAllProductFromDB);
 router.get('/orders/:id', (0, auth_1.default)(client_1.UserRole.VENDOR), vendorshop_controler_1.shopControllers.getShopByVendorIdFromDB);
 exports.VendorShopsRoutes = router;
