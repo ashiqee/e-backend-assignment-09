@@ -8,6 +8,7 @@ import pick from "../../../share/pick";
 import { paginationHelper } from "../../../helpers/paginationHelper";
 import { OrderStatus, Prisma, VendorShopStatus } from "@prisma/client";
 import { initiatePayment } from "../Payments/payment.utils";
+import { ordersFilterableFields, ordersFilterableOptions, ordersSearchAbleFields } from "./orders.constant";
 
 
 
@@ -218,14 +219,55 @@ const itemsWithSubtotal = cartItems.map(item => {
 const getCustomerOrderHistory = async (req: Request & { user?: IAuthUser }) => {
   try {
    
+    console.log(req.query);
+
+    const filters = pick(req.query, ordersFilterableFields);
+    const options = pick(req.query, ordersFilterableOptions)
+    const {page,limit,skip}= paginationHelper.calculatePagination(options);
+    const {searchTerm , ...filterData} = filters;
+    
     const user = await prisma.user.findUniqueOrThrow({
       where: { email: req.user?.email },
       select: { id: true }, 
     });
 
-    // Fetch the user's order history
+    const andConditions: Prisma.OrderWhereInput[] = [{ userId: user.id }];
+
+    // Handle searchTerm
+    if(searchTerm){
+      andConditions.push({
+          OR: ordersSearchAbleFields.map(field=>({
+              [field]:{
+                  contains: searchTerm,
+                  mode: 'insensitive'
+              }
+          }))
+      })
+  }
+    
+    // Handle filterData
+    if (Object.keys(filterData).length > 0) {
+        andConditions.push({
+            AND: Object.keys(filterData).map(key => ({
+                [key]: {
+                    equals: (filterData as any)[key]  
+                }
+            }))
+        });
+    }
+ 
+    const whereConditions: Prisma.OrderWhereInput = andConditions.length > 0 ? { AND: andConditions } : {};
+    
+    const sortBy = options.sortBy || 'createdAt'; 
+    const sortOrder = options.sortOrder === 'desc' ? 'desc' : 'asc'; 
+  
     const orderHistory = await prisma.order.findMany({
-      where: { userId: user.id }, 
+      where: whereConditions, 
+      skip,
+        take:limit,
+        orderBy: {
+            [sortBy as string]: sortOrder,
+          }, 
       include: {
         orderItems: {
           include: {
@@ -240,11 +282,22 @@ const getCustomerOrderHistory = async (req: Request & { user?: IAuthUser }) => {
           },
         },
       },
-      orderBy: { createdAt: "desc" }, 
+       
     });
-
     
-    return orderHistory;
+    const total = await prisma.order.count({
+      where: whereConditions
+  })
+    
+    return {
+      paginateData:{
+          total,
+          limit,
+          page
+      },
+      data: orderHistory
+  };
+    
   } catch (error) {
     console.error("Error fetching customer order history:", error);
     throw new Error("Unable to fetch order history.");

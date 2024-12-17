@@ -1,5 +1,6 @@
 export const ordersSearchAbleFields: string[] = [
-    'name',
+    'id',
+    "name",
     'description',
   
 
