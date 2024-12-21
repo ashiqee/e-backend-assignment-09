@@ -302,18 +302,44 @@ const getAllVendorProducts = async (req:Request & {user?:IAuthUser} )=>{
 
 // get a product 
 
-const getAProduct = async (req: Request)=>{
-        const productId =parseInt(req.params.id)
-    const result = await prisma.product.findUniqueOrThrow({
+const getAProduct = async (req: Request) => {
+    const productId = parseInt(req.params.id);
+
+ 
+    const product = await prisma.product.findUniqueOrThrow({
         where: {
             id: productId,
-            isDeleted:false
+            isDeleted: false
+        },
+        include: {
+            category: true,
+            vendorShop: true
         }
-    })
+    });
 
-    return result;
+    if (!product.categoryId) {
+        throw new Error("Product does not have an associated category.");
+    }
+
    
-}
+    const similarProducts = await prisma.product.findMany({
+        where: {
+            categoryId: product.categoryId,
+            isDeleted: false,
+            id: { not: productId } 
+        },
+        include: {
+            category: true,
+            vendorShop: true
+        }
+    });
+
+    return {
+        product,
+        similarProducts
+    };
+};
+
 
 
 const updateFlashSaleStatus = async (req: Request)=>{
