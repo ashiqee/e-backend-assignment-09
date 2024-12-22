@@ -137,7 +137,11 @@ const getAllShop = async (req:Request)=>{
         },
         include:{
             owner:true,
-            products:true
+            products:{
+                include:{
+                    category:true
+                }
+            }
         }
   });
  
@@ -368,6 +372,7 @@ const getShopByVendorId = async (req: Request) =>{
             {
                 include:{
                     OrderItem:true,
+                    category:true,
                     
                 }
             },
@@ -390,7 +395,11 @@ const getShopById= async (req: Request) =>{
           isDeleted : false
         },
         include: { 
-            products:true,
+            products:{
+                include:{
+                    category:true
+                }
+            },
             followers:true,
             
             

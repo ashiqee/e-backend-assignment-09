@@ -313,7 +313,20 @@ const getAProduct = async (req: Request) => {
         },
         include: {
             category: true,
-            vendorShop: true
+            vendorShop: true,
+            reviews:{
+                select:{
+                     user:{
+                        select:{
+                            fullName:true,
+                            profilePhoto:true,
+                        }
+                     },
+                     rating:true,
+                     comment:true,
+                     createdAt:true
+                }
+            }
         }
     });
 
