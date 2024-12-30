@@ -16,4 +16,5 @@ export const ordersFilterableOptions: string[] = [
     'page',
     'sortBy',
     'sortOrder',
+    'shopId',
   ];

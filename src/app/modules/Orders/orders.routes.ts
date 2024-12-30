@@ -51,6 +51,7 @@ router.post(
 
 router.get('/getUserOrders',auth(UserRole.CUSTOMER),ordersControllers.getCustomerOrders)
 router.get('/getAllOrders',auth(UserRole.ADMIN),ordersControllers.getCustomerOrdersForAdmin)
+router.get('/getAllVendorOrders',auth(UserRole.VENDOR),ordersControllers.getOrdersVendorShops)
 router.put('/statusChange/:id',auth(UserRole.VENDOR),ordersControllers.orderItemStatusChange)
 
 

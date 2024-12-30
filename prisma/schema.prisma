@@ -41,23 +41,26 @@ model User {
 }
 
 model VendorShop {
-  id          Int       @id @default(autoincrement())
-  name        String    @unique
-  logo         String?
+  id          Int          @id @default(autoincrement())
+  name        String       @unique
+  logo        String?
   description String?
   ownerId     String
+  owner       User         @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   status      VendorShopStatus @default(ACTIVE)
-  isDeleted   Boolean @default(false)
-  owner       User      @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  isDeleted   Boolean      @default(false)
   products    Product[]
-  followers   User[]    @relation("UserFollowedShops")
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-
+  followers   User[]       @relation("UserFollowedShops")
+  orders      OrderItem[]  @relation("VendorShopToOrderItems") 
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
 
   @@index([name])
   @@map("vendorshop")
+  OrderItem OrderItem[]
 }
+
+
 
 enum VendorShopStatus {
   ACTIVE
@@ -143,17 +146,24 @@ enum PaymentStatus {
 
 
 model OrderItem {
-  id        Int     @id @default(autoincrement())
-  orderId   Int
-  orderStatus OrderStatus @default(PENDING)
-  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  productId Int
-  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
-  quantity  Int
-  price     Float
+  id           Int         @id @default(autoincrement())
+  orderId      Int
+  order        Order       @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  vendorShopId Int
+  vendorShop   VendorShop  @relation(fields: [vendorShopId], references: [id], onDelete: Cascade) 
+  productId    Int
+  product      Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+  quantity     Int
+  price        Float
+  orderStatus  OrderStatus @default(PENDING)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
 
   @@map("orderItems")
+  VendorShop VendorShop[] @relation("VendorShopToOrderItems")
 }
+
+
 
 
 

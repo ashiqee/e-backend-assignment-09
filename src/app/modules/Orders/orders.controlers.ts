@@ -33,18 +33,18 @@ const createPayOrder = catchAsync( async( req: Request ,res: Response)=>{
         })
     } )
 
-// const getOrdersVendorShops = catchAsync( async( req: Request ,res: Response)=>{
+const getOrdersVendorShops = catchAsync( async( req: Request ,res: Response)=>{
     
-//     const result =  await OrdersServices.getCartItems(req)
+    const result =  await OrdersServices.getVendorAllOrderHistory(req)
     
     
-//         sendResponse(res,{
-//             success:true,
-//             status: httpStatus.OK,
-//             message:"Vendor All Orders retrive succesfully",
-//             data: result 
-//         })
-//     } )
+        sendResponse(res,{
+            success:true,
+            status: httpStatus.OK,
+            message:"Vendor All Orders retrive succesfully",
+            data: result 
+        })
+    } )
 
 
 // get order items for admin 
@@ -124,6 +124,7 @@ export const ordersControllers = {
     getCustomerOrders,
     orderItemStatusChange,
     createPayOrder,
-    getCustomerOrdersForAdmin
+    getCustomerOrdersForAdmin,
+    getOrdersVendorShops
   
 }
