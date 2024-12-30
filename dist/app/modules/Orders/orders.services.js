@@ -27,6 +27,7 @@ exports.OrdersServices = void 0;
 const prisma_1 = __importDefault(require("../../../share/prisma"));
 const pick_1 = __importDefault(require("../../../share/pick"));
 const paginationHelper_1 = require("../../../helpers/paginationHelper");
+const client_1 = require("@prisma/client");
 const payment_utils_1 = require("../Payments/payment.utils");
 const orders_constant_1 = require("./orders.constant");
 const createOrderInDB = (req) => __awaiter(void 0, void 0, void 0, function* () {
@@ -56,6 +57,7 @@ const createOrderInDB = (req) => __awaiter(void 0, void 0, void 0, function* () 
                         productId: item.productId,
                         quantity: item.quantity,
                         price: item.price,
+                        vendorShopId: item.vendorShopId
                     })),
                 },
             },
@@ -387,6 +389,72 @@ const updateOrderStatusChange = (req) => __awaiter(void 0, void 0, void 0, funct
         throw new Error('Failed to delete cart items: ' + error);
     }
 });
+const getVendorAllOrderHistory = (req) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    try {
+        const filters = (0, pick_1.default)(req.query, orders_constant_1.ordersFilterableFields);
+        const options = (0, pick_1.default)(req.query, orders_constant_1.ordersFilterableOptions);
+        const { page, limit, skip, shopId } = paginationHelper_1.paginationHelper.calculatePagination(options);
+        const { searchTerm } = filters, filterData = __rest(filters, ["searchTerm"]);
+        const user = yield prisma_1.default.user.findUniqueOrThrow({
+            where: { email: (_a = req.user) === null || _a === void 0 ? void 0 : _a.email,
+                role: client_1.UserRole.VENDOR },
+            select: { id: true,
+                vendorShops: {
+                    select: {
+                        id: true
+                    }
+                },
+            },
+        });
+        const shopIdInt = parseInt(shopId) || user.vendorShops[0].id;
+        if (isNaN(shopIdInt)) {
+            throw new Error("Invalid Shop ID");
+        }
+        const andConditions = [{ "vendorShopId": shopIdInt }];
+        // Handle searchTerm
+        if (searchTerm) {
+            andConditions.push({
+                OR: orders_constant_1.ordersSearchAbleFields.map(field => ({
+                    [field]: {
+                        contains: searchTerm,
+                        mode: 'insensitive'
+                    }
+                }))
+            });
+        }
+        const whereConditions = andConditions.length > 0 ? { AND: andConditions } : {};
+        const sortBy = options.sortBy || 'createdAt';
+        const sortOrder = options.sortOrder === 'desc' ? 'desc' : 'asc';
+        const orderHistory = yield prisma_1.default.orderItem.findMany({
+            where: whereConditions,
+            skip,
+            take: limit,
+            orderBy: {
+                [sortBy]: sortOrder,
+            },
+            include: {
+                order: true,
+                product: true,
+            },
+        });
+        const total = yield prisma_1.default.orderItem.count({
+            where: whereConditions
+        });
+        return {
+            paginateData: {
+                total,
+                limit,
+                page
+            },
+            data: orderHistory
+        };
+    }
+    catch (error) {
+        console.error("Error fetching customer order history:", error);
+        throw new Error("Unable to fetch order history.");
+    }
+});
 exports.OrdersServices = {
     createOrderInDB,
     getOrderAllForAdmin,
@@ -394,5 +462,6 @@ exports.OrdersServices = {
     getCustomerOrderHistory,
     updateOrderStatusChange,
     createPaymentOrderInDB,
-    getCustomerAllOrderHistoryForAdmin
+    getCustomerAllOrderHistoryForAdmin,
+    getVendorAllOrderHistory
 };

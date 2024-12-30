@@ -22,6 +22,19 @@ const createShopInDB = catchAsync(async (req: Request , res: Response) => {
     })
 });
 
+
+const followShopInDB = catchAsync(async (req: Request , res: Response) => {
+
+     
+    const result = await vendorShopServices.followShop(req);
+    sendResponse(res, {
+        status: httpStatus.OK,
+        success: true,
+        message: result,
+        data: result
+    })
+});
+
 const updatedShopInDB = catchAsync(async (req: Request, res: Response) => {
 
  
@@ -125,6 +138,7 @@ const blacklistedShopInDB = catchAsync(async (req: Request, res: Response) => {
         blacklistedShopInDB,
         deleteShopFromDB,
         getAllMyShopFromDB,
-        getShopByIdAllProductFromDB
+        getShopByIdAllProductFromDB,
+        followShopInDB
         
     }

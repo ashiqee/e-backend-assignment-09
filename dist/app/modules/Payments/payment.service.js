@@ -40,7 +40,6 @@ const confirmationService = (transactionId) => __awaiter(void 0, void 0, void 0,
     }
     // Load and replace the confirmation template
     const filePath = (0, path_1.join)(__dirname, '../../../views/confirmation.html');
-    console.log(filePath);
     let template = (0, fs_1.readFileSync)(filePath, 'utf-8');
     template = template.replace('{{message}}', message);
     return template;

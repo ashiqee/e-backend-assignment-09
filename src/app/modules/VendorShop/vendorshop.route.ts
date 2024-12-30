@@ -36,6 +36,12 @@ router.patch('/update/:id',
    
      );
 
+router.put('/follow',  
+    auth(UserRole.CUSTOMER),
+  shopControllers.followShopInDB,
+   
+     );
+
 
 router.delete('/',auth(UserRole.ADMIN,),shopControllers.deleteShopFromDB);
 

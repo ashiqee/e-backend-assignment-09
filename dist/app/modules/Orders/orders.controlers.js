@@ -35,15 +35,15 @@ const createPayOrder = (0, catchAsync_1.default)((req, res) => __awaiter(void 0,
         data: result
     });
 }));
-// const getOrdersVendorShops = catchAsync( async( req: Request ,res: Response)=>{
-//     const result =  await OrdersServices.getCartItems(req)
-//         sendResponse(res,{
-//             success:true,
-//             status: httpStatus.OK,
-//             message:"Vendor All Orders retrive succesfully",
-//             data: result 
-//         })
-//     } )
+const getOrdersVendorShops = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield orders_services_1.OrdersServices.getVendorAllOrderHistory(req);
+    (0, sendResponse_1.default)(res, {
+        success: true,
+        status: http_status_1.default.OK,
+        message: "Vendor All Orders retrive succesfully",
+        data: result
+    });
+}));
 // get order items for admin 
 const getOrdersAllItems = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield orders_services_1.OrdersServices.getOrderAllForAdmin(req);
@@ -97,5 +97,6 @@ exports.ordersControllers = {
     getCustomerOrders,
     orderItemStatusChange,
     createPayOrder,
-    getCustomerOrdersForAdmin
+    getCustomerOrdersForAdmin,
+    getOrdersVendorShops
 };

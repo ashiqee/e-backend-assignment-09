@@ -437,6 +437,104 @@ const blacklistShop = async (req:Request)=>{
     return blackListResult;
 }
 
+// follow section 
+const followShop = async (req: Request & { user?: IAuthUser }) => {
+    const userEmail = req.user?.email;
+    if (!userEmail) {
+        throw new Error("User is not authenticated");
+    }
+
+    // Fetch the user ID
+    const user = await prisma.user.findUniqueOrThrow({
+        where: {
+            email: userEmail,
+        },
+        select: {
+            id: true,
+        },
+    });
+
+    const shopId = parseInt(req.body.shopId);
+    if (isNaN(shopId)) {
+        throw new Error("Invalid shop ID");
+    }
+
+    // Check if the shop exists and is not deleted
+    await prisma.vendorShop.findUniqueOrThrow({
+        where: {
+            id: shopId,
+            isDeleted: false,
+        },
+    });
+
+    // Check if the user is already following the shop
+    const isFollowing = await prisma.vendorShop.findFirst({
+        where: {
+            id: shopId,
+            followers: {
+                some: {
+                    id: user.id,
+                },
+            },
+        },
+    });
+
+    let result;
+    if (isFollowing) {
+        // Unfollow logic: Remove user from shop's followers
+        result = await prisma.vendorShop.update({
+            where: {
+                id: shopId,
+            },
+            data: {
+                followers: {
+                    disconnect: {
+                        id: user.id,
+                    },
+                },
+            },
+            include: {
+                followers: {
+                    select: {
+                        id: true,
+                    }
+                },
+            }
+        });
+        if(result){
+            result= "Unfollowing successfull"
+        }
+    } else {
+        // Follow logic: Add user to shop's followers
+        result = await prisma.vendorShop.update({
+            where: {
+                id: shopId,
+            },
+            data: {
+                followers: {
+                    connect: {
+                        id: user.id,
+                    },
+                },
+            },
+            include: {
+                followers: {
+                    select: {
+                        id: true,
+                    }
+                },
+            }
+        });
+
+        if(result){
+            result= "Following successfull"
+        }
+    }
+
+    return result;
+};
+
+
 export const vendorShopServices = {
     createShop,
     getAllShop,
@@ -445,5 +543,6 @@ export const vendorShopServices = {
     deleteVendorShop,
     blacklistShop,
     getMyAllShop,
-    getShopById
+    getShopById,
+    followShop
 }

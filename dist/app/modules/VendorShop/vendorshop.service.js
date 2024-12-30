@@ -120,7 +120,11 @@ const getAllShop = (req) => __awaiter(void 0, void 0, void 0, function* () {
         },
         include: {
             owner: true,
-            products: true
+            products: {
+                include: {
+                    category: true
+                }
+            }
         }
     });
     const transformedShops = allShops.map((shop) => {
@@ -304,6 +308,7 @@ const getShopByVendorId = (req) => __awaiter(void 0, void 0, void 0, function* (
             products: {
                 include: {
                     OrderItem: true,
+                    category: true,
                 }
             },
             followers: true,
@@ -320,7 +325,11 @@ const getShopById = (req) => __awaiter(void 0, void 0, void 0, function* () {
             isDeleted: false
         },
         include: {
-            products: true,
+            products: {
+                include: {
+                    category: true
+                }
+            },
             followers: true,
         }
     });
@@ -347,6 +356,97 @@ const blacklistShop = (req) => __awaiter(void 0, void 0, void 0, function* () {
     });
     return blackListResult;
 });
+// follow section 
+const followShop = (req) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    const userEmail = (_a = req.user) === null || _a === void 0 ? void 0 : _a.email;
+    if (!userEmail) {
+        throw new Error("User is not authenticated");
+    }
+    // Fetch the user ID
+    const user = yield prisma_1.default.user.findUniqueOrThrow({
+        where: {
+            email: userEmail,
+        },
+        select: {
+            id: true,
+        },
+    });
+    const shopId = parseInt(req.body.shopId);
+    if (isNaN(shopId)) {
+        throw new Error("Invalid shop ID");
+    }
+    // Check if the shop exists and is not deleted
+    yield prisma_1.default.vendorShop.findUniqueOrThrow({
+        where: {
+            id: shopId,
+            isDeleted: false,
+        },
+    });
+    // Check if the user is already following the shop
+    const isFollowing = yield prisma_1.default.vendorShop.findFirst({
+        where: {
+            id: shopId,
+            followers: {
+                some: {
+                    id: user.id,
+                },
+            },
+        },
+    });
+    let result;
+    if (isFollowing) {
+        // Unfollow logic: Remove user from shop's followers
+        result = yield prisma_1.default.vendorShop.update({
+            where: {
+                id: shopId,
+            },
+            data: {
+                followers: {
+                    disconnect: {
+                        id: user.id,
+                    },
+                },
+            },
+            include: {
+                followers: {
+                    select: {
+                        id: true,
+                    }
+                },
+            }
+        });
+        if (result) {
+            result = "Unfollowing successfull";
+        }
+    }
+    else {
+        // Follow logic: Add user to shop's followers
+        result = yield prisma_1.default.vendorShop.update({
+            where: {
+                id: shopId,
+            },
+            data: {
+                followers: {
+                    connect: {
+                        id: user.id,
+                    },
+                },
+            },
+            include: {
+                followers: {
+                    select: {
+                        id: true,
+                    }
+                },
+            }
+        });
+        if (result) {
+            result = "Following successfull";
+        }
+    }
+    return result;
+});
 exports.vendorShopServices = {
     createShop,
     getAllShop,
@@ -355,5 +455,6 @@ exports.vendorShopServices = {
     deleteVendorShop,
     blacklistShop,
     getMyAllShop,
-    getShopById
+    getShopById,
+    followShop
 };

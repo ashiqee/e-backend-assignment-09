@@ -14,4 +14,5 @@ exports.ordersFilterableOptions = [
     'page',
     'sortBy',
     'sortOrder',
+    'shopId',
 ];

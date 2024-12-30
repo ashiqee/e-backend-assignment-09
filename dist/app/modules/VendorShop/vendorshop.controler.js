@@ -26,6 +26,15 @@ const createShopInDB = (0, catchAsync_1.default)((req, res) => __awaiter(void 0,
         data: result
     });
 }));
+const followShopInDB = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield vendorshop_service_1.vendorShopServices.followShop(req);
+    (0, sendResponse_1.default)(res, {
+        status: http_status_1.default.OK,
+        success: true,
+        message: result,
+        data: result
+    });
+}));
 const updatedShopInDB = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield vendorshop_service_1.vendorShopServices.updateVendorShop(req);
     (0, sendResponse_1.default)(res, {
@@ -98,5 +107,6 @@ exports.shopControllers = {
     blacklistedShopInDB,
     deleteShopFromDB,
     getAllMyShopFromDB,
-    getShopByIdAllProductFromDB
+    getShopByIdAllProductFromDB,
+    followShopInDB
 };

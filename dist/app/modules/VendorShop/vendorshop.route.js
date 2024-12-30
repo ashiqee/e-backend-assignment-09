@@ -19,6 +19,7 @@ router.patch('/update/:id', (0, auth_1.default)(client_1.UserRole.ADMIN, client_
     req.body = vendorshop_validation_1.shopValidation.updateShopSchema.parse(JSON.parse(req.body.data));
     return vendorshop_controler_1.shopControllers.updatedShopInDB(req, res, next);
 });
+router.put('/follow', (0, auth_1.default)(client_1.UserRole.CUSTOMER), vendorshop_controler_1.shopControllers.followShopInDB);
 router.delete('/', (0, auth_1.default)(client_1.UserRole.ADMIN), vendorshop_controler_1.shopControllers.deleteShopFromDB);
 router.delete('/blacklist/:shopId', (0, auth_1.default)(client_1.UserRole.ADMIN), vendorshop_controler_1.shopControllers.blacklistedShopInDB);
 router.get('/', vendorshop_controler_1.shopControllers.getAllShopFromDB);

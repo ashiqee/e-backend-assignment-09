@@ -482,7 +482,6 @@ const result = await prisma.orderItem.update({
       const {page,limit,skip,shopId}= paginationHelper.calculatePagination(options);
       const {searchTerm , ...filterData} = filters;
 
-      console.log(searchTerm);
       
       
       const user = await prisma.user.findUniqueOrThrow({

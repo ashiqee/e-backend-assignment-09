@@ -246,13 +246,47 @@ const getAllVendorProducts = (req) => __awaiter(void 0, void 0, void 0, function
 // get a product 
 const getAProduct = (req) => __awaiter(void 0, void 0, void 0, function* () {
     const productId = parseInt(req.params.id);
-    const result = yield prisma_1.default.product.findUniqueOrThrow({
+    const product = yield prisma_1.default.product.findUniqueOrThrow({
         where: {
             id: productId,
             isDeleted: false
+        },
+        include: {
+            category: true,
+            vendorShop: true,
+            reviews: {
+                select: {
+                    user: {
+                        select: {
+                            fullName: true,
+                            profilePhoto: true,
+                        }
+                    },
+                    rating: true,
+                    comment: true,
+                    createdAt: true
+                }
+            }
         }
     });
-    return result;
+    if (!product.categoryId) {
+        throw new Error("Product does not have an associated category.");
+    }
+    const similarProducts = yield prisma_1.default.product.findMany({
+        where: {
+            categoryId: product.categoryId,
+            isDeleted: false,
+            id: { not: productId }
+        },
+        include: {
+            category: true,
+            vendorShop: true
+        }
+    });
+    return {
+        product,
+        similarProducts
+    };
 });
 const updateFlashSaleStatus = (req) => __awaiter(void 0, void 0, void 0, function* () {
     const productId = parseInt(req.params.id);
